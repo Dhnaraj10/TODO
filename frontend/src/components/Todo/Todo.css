@@ -1,0 +1,185 @@
+.todo-container {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.todo-input-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+  margin: auto;
+}
+
+.todo-title,
+.todo-body {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.todo-body {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.add-btn {
+  padding: 10px 20px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-btn:hover {
+  background-color: #333;
+}
+
+.todo-list {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+}
+
+.todo-card {
+  border: 1px solid #000;
+  padding: 15px;
+  border-radius: 12px;
+  background-color: #fff;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.todo-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+}
+
+.todo-card p {
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.todo-card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.update-btn,
+.delete-btn {
+  padding: 6px 12px;
+  border: none;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.update-btn {
+  background-color: #000;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #fff;
+  color: red;
+  border: 1px solid red;
+}
+
+.update-btn:hover {
+  background-color: #333;
+}
+
+.delete-btn:hover {
+  background-color: red;
+  color: white;
+}
+/* Modal Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-input,
+.modal-textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.modal-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modal-update-btn {
+  background-color: #000;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-cancel-btn {
+  background-color: white;
+  color: #000;
+  border: 1px solid #000;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-update-btn:hover {
+  background-color: #333;
+}
+
+.modal-cancel-btn:hover {
+  background-color: #f5f5f5;
+}

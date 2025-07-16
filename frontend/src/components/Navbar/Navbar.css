@@ -1,0 +1,45 @@
+.custom-navbar {
+  background-color: #111;
+  padding: 10px 20px;
+}
+
+.navbar-brand {
+  color: white !important;
+  font-size: 1.3rem;
+  text-decoration: none;
+}
+
+.logo-icon {
+  font-size: 24px;
+  color: white;
+}
+
+.nav-btn {
+  background-color: #222;
+  border: 1px solid #666;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.nav-btn:hover {
+  background-color: #fff;
+  color: #000;
+  border-color: transparent;
+}
+
+.nav-btn:focus,
+.nav-btn:active,
+.nav-btn:visited {
+  text-decoration: none;
+}
+
+.user-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #666;
+}
