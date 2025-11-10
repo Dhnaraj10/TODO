@@ -13,7 +13,8 @@ const corsOptions = {
     "https://todo.vercel.app",
     "https://todo-eww6nj1cz-dhanraj-singhs-projects.vercel.app",
     "https://todo-neon-delta.vercel.app",
-    "https://todo-fcc7vj8au-dhanraj-singhs-projects.vercel.app"
+    "https://todo-fcc7vj8au-dhanraj-singhs-projects.vercel.app",
+    "https://todo-ber8v5yez-dhanraj-singhs-projects.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
@@ -23,8 +24,20 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+// Add logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
 app.get("/", (req, res) => {
   res.send("hello");
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Error occurred:", err);
+  res.status(500).json({ message: "Internal server error" });
 });
 
 app.use("/api/v1", auth);
