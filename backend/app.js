@@ -10,7 +10,8 @@ const list = require("./routes/list");
 const corsOptions = {
   origin: [
     process.env.FRONTEND_URL || "http://localhost:3000",
-    "https://todo.vercel.app"
+    "https://todo.vercel.app",
+    "https://todo-eww6nj1cz-dhanraj-singhs-projects.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true

@@ -34,6 +34,7 @@ const SignIn = () => {
       toast.success("Login successful!");
       navigate('/todo');
     } catch (err) {
+      // Don't log sensitive information like passwords
       const msg = err.response?.data?.message || "Login failed";
       toast.error(msg);
 
@@ -64,6 +65,7 @@ const SignIn = () => {
           value={form.password}
           onChange={handleChange}
           required
+          autoComplete="current-password"
         />
 
         <button type="submit" className="submit-btn">Sign In</button>

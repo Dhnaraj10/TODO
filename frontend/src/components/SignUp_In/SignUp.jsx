@@ -51,6 +51,7 @@ const SignUp = () => {
 
       navigate('/todo');
     } catch (err) {
+      // Don't log sensitive information like passwords
       const msg = err.response?.data?.message || "Signup failed";
       toast.error(msg);
 
@@ -68,8 +69,8 @@ const SignUp = () => {
 
         <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} required />
         <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-        <input type="password" name="confirmPassword" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} required autoComplete="new-password" />
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange} required autoComplete="new-password" />
 
         <button type="submit" className="submit-btn">Sign Up</button>
       </form>
