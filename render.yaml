@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: todo-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://dhanrajsingh:dhanraj10@cluster0.xsembmw.mongodb.net/?appName=Cluster0
+      - key: PORT
+        value: 1000
+      - key: FRONTEND_URL
+        value: http://localhost:3000
