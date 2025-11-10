@@ -10,10 +10,10 @@ const Footer = () => {
           Simplify your tasks. Amplify your productivity.
         </p>
         <div className="footer-links">
-          <a href="javascript:void(0)">About Us</a>
-          <a href="javascript:void(0)">Privacy</a>
-          <a href="javascript:void(0)">Terms</a>
-          <a href="javascript:void(0)">Contact</a>
+          <button className="footer-link-button" onClick={() => {}}>About Us</button>
+          <button className="footer-link-button" onClick={() => {}}>Privacy</button>
+          <button className="footer-link-button" onClick={() => {}}>Terms</button>
+          <button className="footer-link-button" onClick={() => {}}>Contact</button>
         </div>
         <p className="footer-credit">
           © {new Date().getFullYear()} TODO App. Built with 💻 by Dhanraj Singh.
