@@ -11,4 +11,11 @@ services:
       - key: PORT
         value: 1000
       - key: FRONTEND_URL
-        value: http://localhost:3000
+        value: https://todo-hgx8vwxq7-dhanraj-singhs-projects.vercel.app
+    plan: free
+    region: ohio
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - backend/**
+    numInstances: 1

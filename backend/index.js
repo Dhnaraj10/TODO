@@ -1,3 +1,3 @@
-// This file is needed for Render to find the entry point
-// It simply requires the actual app.js file
+// Simplified entry point
+// Just require the app to start it
 require('./app.js');

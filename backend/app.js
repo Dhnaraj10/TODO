@@ -3,10 +3,6 @@ const express = require("express");
 const cors = require("cors"); // ✅ Import CORS
 const app = express();
 const mongoose = require("mongoose"); // For health check
-const connectDB = require("./connection/connection");
-
-// Connect to MongoDB
-connectDB();
 
 const auth = require("./routes/auth");
 const list = require("./routes/list");
@@ -161,6 +157,12 @@ app.use("/api/v2", list);
 
 const PORT = process.env.PORT || 1000;
 
-app.listen(PORT, () => {
-  console.log(`✅ server started on port ${PORT}`);
-});
+// Export the app for use in startup.js
+module.exports = app;
+
+// Only start the server if this file is run directly (not imported)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅ server started on port ${PORT}`);
+  });
+}
