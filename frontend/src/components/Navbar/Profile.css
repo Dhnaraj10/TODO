@@ -1,0 +1,119 @@
+.profile-container {
+  background-color: #000;
+  color: #fff;
+  min-height: 80vh;
+  padding: 40px 20px;
+}
+
+.profile-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.profile-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #111;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.profile-user-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 2px solid #333;
+}
+
+.user-details h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.user-details p {
+  color: #aaa;
+  margin: 5px 0;
+}
+
+.tasks-section {
+  margin-bottom: 40px;
+}
+
+.tasks-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #fff;
+  padding-left: 10px;
+}
+
+.tasks-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  padding: 10px;
+}
+
+.no-tasks {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 50px 0;
+  text-align: center;
+  width: 100%;
+  font-style: italic;
+}
+
+.completed .todo-card {
+  background-color: #1a1a1a;
+  border: 1px solid #444;
+}
+
+.completed .todo-card h3 {
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 20px 15px;
+  }
+  
+  .profile-header h1 {
+    font-size: 2rem;
+  }
+  
+  .user-info {
+    padding: 20px;
+  }
+  
+  .profile-user-icon {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .tasks-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .tasks-list {
+    gap: 20px;
+  }
+}

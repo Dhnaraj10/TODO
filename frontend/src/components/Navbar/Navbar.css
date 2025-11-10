@@ -16,13 +16,14 @@
 
 .nav-btn {
   background-color: #222;
-  border: 1px solid #666;
+  border: none;
   color: white;
-  padding: 6px 14px;
-  border-radius: 5px;
+  padding: 8px 16px;
+  border-radius: 6px;
   font-size: 0.9rem;
   transition: all 0.3s ease;
   text-decoration: none;
+  display: inline-block;
 }
 
 .nav-btn:hover {
@@ -38,8 +39,12 @@
 }
 
 .user-icon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 1px solid #666;
+  transition: all 0.3s ease;
+}
+
+.user-icon:hover {
+  transform: scale(1.1);
 }

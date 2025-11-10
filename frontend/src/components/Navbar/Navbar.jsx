@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const Navbar = () => {
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); // ✅ fixed
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <nav className="navbar navbar-expand-lg custom-navbar">
@@ -43,18 +44,27 @@ const Navbar = () => {
                 </li>
               </>
             ) : (
-              <li className="nav-item">
-                <Link to="/logout" className="nav-btn">Logout</Link>
-              </li>
+              <>
+                <li className="nav-item">
+                  <Link to="/profile" className="nav-btn">Profile</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/logout" className="nav-btn">Logout</Link>
+                </li>
+              </>
             )}
 
-            <li className="nav-item">
-              <img
-                className="user-icon"
-                src="https://static.vecteezy.com/system/resources/previews/005/005/788/non_2x/user-icon-in-trendy-flat-style-isolated-on-grey-background-user-symbol-for-your-web-site-design-logo-app-ui-illustration-eps10-free-vector.jpg"
-                alt="user"
-              />
-            </li>
+            {isLoggedIn && (
+              <li className="nav-item">
+                <Link to="/profile">
+                  <img
+                    className="user-icon"
+                    src="https://static.vecteezy.com/system/resources/previews/005/005/788/non_2x/user-icon-in-trendy-flat-style-isolated-on-grey-background-user-symbol-for-your-web-site-design-logo-app-ui-illustration-eps10-free-vector.jpg"
+                    alt="user"
+                  />
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

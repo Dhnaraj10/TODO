@@ -28,7 +28,9 @@ const Todo = () => {
     if (isLoggedIn && userId) {
       axios.get(`${BASE_URL}/api/v2/getTasks/${userId}`)
         .then((res) => {
-          setTasks(res.data.list || []);
+          // Filter out completed tasks - they should only appear in profile
+          const activeTasks = (res.data.list || []).filter(task => !task.completed);
+          setTasks(activeTasks);
         })
         .catch(() => {
           toast.error("Failed to load tasks");
@@ -51,7 +53,8 @@ const Todo = () => {
         const res = await axios.post(`${BASE_URL}/api/v2/addTask`, {
           title,
           body,
-          user: userId
+          user: userId,
+          completed: false // New tasks are not completed by default
         });
 
         if (res.data.message === "Task added successfully") {
@@ -85,9 +88,27 @@ const Todo = () => {
     }
   };
 
-  // Update Task
+  // Update Task (mark as complete/incomplete)
   const handleUpdate = async (task) => {
-    setEditingTask(task);
+    // If this is for editing, open the update modal
+    if (!task.completed) {
+      setEditingTask(task);
+      return;
+    }
+    
+    // Otherwise, this is for marking as complete
+    try {
+      const updatedTask = { ...task, completed: !task.completed };
+      const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${task._id}`, updatedTask);
+      if (res.data.message === "Task updated successfully") {
+        setTasks(tasks.filter(t => t._id !== task._id));
+        toast.success("Task marked as complete");
+      } else {
+        toast.error("Failed to update task");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating task");
+    }
   };
 
   const handleSaveUpdate = async (updatedTask) => {
@@ -107,51 +128,43 @@ const Todo = () => {
 
   return (
     <div className="todo-container">
-      <div className="todo-header">
-        <h1 className="todo-title">TODO</h1>
-        <div className="todo-input-group">
-          <input
-            type="text"
-            placeholder="Title"
-            className="todo-input title-input"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <textarea
-            placeholder="Body"
-            className="todo-input body-input"
-            rows={3}
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-          />
-          <button className="add-button" onClick={handleAdd}>Add Task</button>
-        </div>
+      <div className="todo-input-section">
+        <h2 className="todo-heading">TODO</h2>
+        <input
+          type="text"
+          placeholder='Title'
+          className='todo-title'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <textarea
+          placeholder='Body'
+          className='todo-body'
+          rows={3}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+        />
+        <button className='add-btn' onClick={handleAdd}>Add Task</button>
       </div>
-
-      <div className="todo-main">
-        <div className="todo-list">
-          {isLoggedIn ? (
-            tasks.length > 0 ? (
-              tasks.map((task) => (
-                <TodoCards
-                  key={task._id}
-                  title={task.title}
-                  body={task.body}
-                  onDelete={() => handleDelete(task._id)}
-                  onEdit={() => handleUpdate(task)}
-                />
-              ))
-            ) : (
-              <div className="empty-state">
-                <p className="empty-message">No tasks found. Add your first task above!</p>
-              </div>
-            )
+      
+      <div className="todo-list">
+        {isLoggedIn ? (
+          tasks.length > 0 ? (
+            tasks.map((task) => (
+              <TodoCards
+                key={task._id}
+                title={task.title}
+                body={task.body}
+                onDelete={() => handleDelete(task._id)}
+                onEdit={() => handleUpdate(task)}
+              />
+            ))
           ) : (
-            <div className="auth-prompt">
-              <p className="auth-message">Please log in to see your tasks</p>
-            </div>
-          )}
-        </div>
+            <p className="no-tasks-message">No tasks found. Add your first task above!</p>
+          )
+        ) : (
+          <p className="login-message">Please log in to see your tasks</p>
+        )}
       </div>
       
       <ToastContainer />

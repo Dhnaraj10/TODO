@@ -11,6 +11,7 @@ import Privacy from './components/FooterPages/Privacy';
 import Terms from './components/FooterPages/Terms';
 import Contact from './components/FooterPages/Contact';
 import About from './components/FooterPages/About';
+import Profile from './components/Navbar/Profile';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -53,6 +54,7 @@ const App = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
       <ToastContainer position="top-center" autoClose={2000} />

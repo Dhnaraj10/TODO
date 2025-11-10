@@ -9,14 +9,19 @@ router.get("/test", (req, res) => {
 // Create Task
 router.post("/addTask", async (req, res) => {
   try {
-    const { title, body, email } = req.body;
-    const existingUser = await User.findOne({ email });
+    const { title, body, user: userId, completed } = req.body;
+    const existingUser = await User.findById(userId);
     if (existingUser) {
-      const list = new List({ title, body, user: [existingUser._id] }); // ✅ fixed
+      const list = new List({ 
+        title, 
+        body, 
+        user: [existingUser._id],
+        completed: completed || false
+      });
       await list.save();
       existingUser.list.push(list._id);
       await existingUser.save();
-      res.status(200).json({ list });
+      res.status(200).json({ message: "Task added successfully", task: list });
     } else {
       res.status(404).json({ message: "User not found" });
     }
@@ -29,9 +34,20 @@ router.post("/addTask", async (req, res) => {
 // Update Task
 router.put("/updateTask/:id", async (req, res) => {
   try {
-    const { title, body } = req.body;
-    const updated = await List.findByIdAndUpdate(req.params.id, { title, body }, { new: true });
-    res.status(200).json({ message: "Task updated", updated });
+    const { title, body, completed } = req.body;
+    const updateData = { title, body };
+    
+    // Only update completed field if it's provided
+    if (typeof completed !== 'undefined') {
+      updateData.completed = completed;
+    }
+    
+    const updated = await List.findByIdAndUpdate(
+      req.params.id, 
+      updateData, 
+      { new: true }
+    );
+    res.status(200).json({ message: "Task updated successfully", updated });
   } catch (error) {
     console.error("Update task error:", error);
     res.status(500).json({ message: "Failed to update task" });
@@ -41,14 +57,14 @@ router.put("/updateTask/:id", async (req, res) => {
 // Delete Task
 router.delete("/deleteTask/:id", async (req, res) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-    if (user) {
-      await User.findByIdAndUpdate(user._id, { $pull: { list: req.params.id } });
+    const list = await List.findById(req.params.id);
+    if (list) {
+      const userId = list.user[0];
+      await User.findByIdAndUpdate(userId, { $pull: { list: req.params.id } });
       await List.findByIdAndDelete(req.params.id);
-      res.status(200).json({ message: "Task deleted" });
+      res.status(200).json({ message: "Task deleted successfully" });
     } else {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "Task not found" });
     }
   } catch (error) {
     console.error("Delete task error:", error);
