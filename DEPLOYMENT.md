@@ -94,11 +94,29 @@ FRONTEND_URL=https://yourfrontenddomain.com
 REACT_APP_BASE_URL=https://yourbackenddomain.com
 ```
 
+## CORS Configuration
+
+The application uses a flexible CORS configuration that allows:
+1. Local development URLs (http://localhost:3000)
+2. Specific production domains
+3. Any Vercel deployment (*.vercel.app)
+
+This approach eliminates the need to update CORS settings every time a new frontend deployment is created.
+
+If you need to restrict access to specific domains, you can:
+1. Update the `allowedOrigins` array in `backend/app.js`
+2. Set the `FRONTEND_URL` environment variable in your Render deployment
+
 ## Troubleshooting
 
-1. **CORS Issues**: Make sure FRONTEND_URL in backend matches your actual frontend URL
-2. **Database Connection**: Verify MONGO_URI is correct and the database is accessible
-3. **Environment Variables**: Ensure all required environment variables are set in your hosting platform
+### CORS Issues
+If you encounter CORS issues:
+1. Check that your frontend domain is either in the allowedOrigins array or ends with .vercel.app
+2. Ensure the FRONTEND_URL environment variable is correctly set in your Render deployment
+3. Check Render logs for "CORS blocked origin" messages
+
+### Manifest.json 401 Errors
+The application now includes a custom route for manifest.json to prevent 401 errors in browser consoles. This is a cosmetic fix and does not affect application functionality.
 
 ## Scaling Considerations
 
