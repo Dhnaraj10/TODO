@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Profile.css';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -14,13 +14,7 @@ const Profile = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
 
-  useEffect(() => {
-    if (isLoggedIn && user?._id) {
-      fetchTasks();
-    }
-  }, [isLoggedIn, user]);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/v2/getTasks/${user._id}`);
       const allTasks = res.data.list || [];
@@ -34,7 +28,13 @@ const Profile = () => {
     } catch (error) {
       toast.error("Failed to load tasks");
     }
-  };
+  }, [user?._id]);
+
+  useEffect(() => {
+    if (isLoggedIn && user?._id) {
+      fetchTasks();
+    }
+  }, [isLoggedIn, user, fetchTasks]);
 
   const handleDelete = async (taskId) => {
     try {

@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const user = useSelector((state) => state.auth.user);
 
   return (
     <nav className="navbar navbar-expand-lg custom-navbar">
