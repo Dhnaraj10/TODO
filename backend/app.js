@@ -14,8 +14,7 @@ const corsOptions = {
     "https://todo-eww6nj1cz-dhanraj-singhs-projects.vercel.app",
     "https://todo-neon-delta.vercel.app",
     "https://todo-fcc7vj8au-dhanraj-singhs-projects.vercel.app",
-    "https://todo-ber8v5yez-dhanraj-singhs-projects.vercel.app",
-    "https://your-latest-vercel-app-url.vercel.app" // 替换为最新的 Vercel 应用 URL
+    "https://todo-ber8v5yez-dhanraj-singhs-projects.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
