@@ -36,6 +36,7 @@ router.post("/register", async (req, res) => {
     await user.save();
     res.status(200).json({ user });
   } catch (error) {
+    console.error("Registration error:", error); // Log the actual error for debugging
     res.status(500).json({ message: "Registration failed", error: error.message });
   }
 });
@@ -64,6 +65,7 @@ router.post("/signin", async (req, res) => {
     const { password: _, ...others } = user._doc;
     res.status(200).json({ message: "Login successful", user: others });
   } catch (error) {
+    console.error("Login error:", error); // Log the actual error for debugging
     res.status(500).json({ message: "Login failed", error: error.message });
   }
 });
