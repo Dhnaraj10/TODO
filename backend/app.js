@@ -7,11 +7,13 @@ require("./connection/connection");
 const auth = require("./routes/auth");
 const list = require("./routes/list");
 
-app.use(cors({
-  origin: "http://localhost:3000", // ✅ Allow React frontend
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:3000", // ✅ Allow React frontend
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
@@ -22,6 +24,8 @@ app.get("/", (req, res) => {
 app.use("/api/v1", auth);
 app.use("/api/v2", list);
 
-app.listen(1000, () => {
-  console.log("✅ server started on port 1000");
+const PORT = process.env.PORT || 1000;
+
+app.listen(PORT, () => {
+  console.log(`✅ server started on port ${PORT}`);
 });

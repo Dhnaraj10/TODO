@@ -9,6 +9,8 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:1000';
+
 const Todo = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -25,7 +27,7 @@ const Todo = () => {
   // Fetch tasks
   useEffect(() => {
     if (isLoggedIn && userId) {
-      axios.get(`http://localhost:1000/api/v2/getTasks/${userId}`)
+      axios.get(`${BASE_URL}/api/v2/getTasks/${userId}`)
         .then((res) => {
           setTasks(res.data.list || []);
         })
@@ -47,96 +49,109 @@ const Todo = () => {
 
     if (title.trim() && body.trim()) {
       try {
-        const res = await axios.post('http://localhost:1000/api/v2/addTask', {
+        const res = await axios.post(`${BASE_URL}/api/v2/addTask`, {
           title,
           body,
-          email: email // ✅ use actual email string
+          user: userId
         });
 
-        setTasks((prev) => [...prev, res.data.list]);
-        toast.success("Task added!");
-        setTitle('');
-        setBody('');
-      } catch {
-        toast.error("Failed to add task");
+        if (res.data.message === "Task added successfully") {
+          setTasks([...tasks, res.data.task]);
+          setTitle('');
+          setBody('');
+          toast.success("Task added successfully");
+        } else {
+          toast.error("Failed to add task");
+        }
+      } catch (error) {
+        toast.error("An error occurred while adding task");
       }
+    } else {
+      toast.error("Title and body are required");
     }
   };
 
   // Delete Task
-  const handleDelete = async (id) => {
+  const handleDelete = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:1000/api/v2/deleteTask/${id}`, {
-        data: { email: email } // ✅ use email
-      });
-      setTasks((prev) => prev.filter((task) => task._id !== id));
-      toast.error("Task deleted!");
-    } catch {
-      toast.error("Failed to delete task");
+      const res = await axios.delete(`${BASE_URL}/api/v2/deleteTask/${taskId}`);
+      if (res.data.message === "Task deleted successfully") {
+        setTasks(tasks.filter(task => task._id !== taskId));
+        toast.success("Task deleted successfully");
+      } else {
+        toast.error("Failed to delete task");
+      }
+    } catch (error) {
+      toast.error("An error occurred while deleting task");
     }
   };
 
   // Update Task
-  const handleUpdate = async (updatedTask) => {
-    try {
-      await axios.put(`http://localhost:1000/api/v2/updateTask/${updatedTask._id}`, {
-        title: updatedTask.title,
-        body: updatedTask.body,
-        email: email // ✅ send email
-      });
+  const handleUpdate = async (task) => {
+    setEditingTask(task);
+  };
 
-      setTasks((prev) =>
-        prev.map((task) =>
-          task._id === updatedTask._id ? updatedTask : task
-        )
-      );
-      toast.success("Task updated!");
-    } catch {
-      toast.error("Failed to update task");
+  const handleSaveUpdate = async (updatedTask) => {
+    try {
+      const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${updatedTask._id}`, updatedTask);
+      if (res.data.message === "Task updated successfully") {
+        setTasks(tasks.map(task => task._id === updatedTask._id ? updatedTask : task));
+        setEditingTask(null);
+        toast.success("Task updated successfully");
+      } else {
+        toast.error("Failed to update task");
+      }
+    } catch (error) {
+      toast.error("An error occurred while updating task");
     }
   };
 
   return (
-    <div className="todo-container">
-      <div className="todo-input-section">
-        <input
-          className="todo-title"
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          className="todo-body"
-          placeholder="Body"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-        ></textarea>
-        <button className="add-btn" onClick={handleAdd}>Add</button>
+    <>
+      <div className="todo">
+        <div className="todo-main">
+          <div className="todo-input">
+            <input
+              type="text"
+              placeholder='Title'
+              className='todo-inputs'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <textarea
+              placeholder='Body'
+              className='todo-inputs'
+              rows={3}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+            />
+            <button className='todo-button' onClick={handleAdd}>Add Task</button>
+          </div>
+          <div className="todo-cards">
+            {isLoggedIn ? (
+              tasks.map((task) => (
+                <TodoCards
+                  key={task._id}
+                  task={task}
+                  onDelete={handleDelete}
+                  onUpdate={handleUpdate}
+                />
+              ))
+            ) : (
+              <p>Please log in to see your tasks</p>
+            )}
+          </div>
+        </div>
       </div>
-
-      <div className="todo-list">
-        {tasks.map((task) => (
-          <TodoCards
-            key={task._id}
-            title={task.title}
-            body={task.body}
-            onDelete={() => handleDelete(task._id)}
-            onEdit={() => setEditingTask(task)}
-          />
-        ))}
-      </div>
-
+      <ToastContainer />
       {editingTask && (
         <Update
           task={editingTask}
-          onUpdate={handleUpdate}
-          onClose={() => setEditingTask(null)}
+          onSave={handleSaveUpdate}
+          onCancel={() => setEditingTask(null)}
         />
       )}
-
-      <ToastContainer position="top-center" autoClose={1500} />
-    </div>
+    </>
   );
 };
 

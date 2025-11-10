@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/userSlice';
 
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:1000';
+
 const SignIn = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:1000/api/v1/signin", form);
+      const res = await axios.post(`${BASE_URL}/api/v1/signin`, form);
 
       const userData = {
         _id: res.data.user._id,
