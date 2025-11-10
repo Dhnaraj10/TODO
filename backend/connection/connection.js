@@ -8,6 +8,11 @@ const connectDB = async (retries = 5) => {
     console.log("MongoDB URI is set:", !!process.env.MONGO_URI);
     console.log("Using MongoDB URI:", mongoUri.substring(0, 30) + "..."); // Log first 30 chars for security
     
+    // Validate URI format
+    if (!mongoUri.startsWith("mongodb")) {
+      throw new Error("Invalid MongoDB URI format. Must start with 'mongodb'");
+    }
+    
     // Add connection options for better reliability
     const options = {
       useNewUrlParser: true,
@@ -15,13 +20,18 @@ const connectDB = async (retries = 5) => {
       serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
       maxPoolSize: 10, // Maintain up to 10 socket connections
-      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
     };
+
+    console.log("Connecting with options:", {
+      serverSelectionTimeoutMS: options.serverSelectionTimeoutMS,
+      socketTimeoutMS: options.socketTimeoutMS,
+      maxPoolSize: options.maxPoolSize
+    });
 
     const conn = await mongoose.connect(mongoUri, options);
     console.log(`✅ Connected to MongoDB: ${conn.connection.host}`);
     console.log(`✅ Database name: ${conn.connection.name}`);
+    console.log(`✅ Connection readyState: ${mongoose.connection.readyState}`);
     
     // Handle connection events
     mongoose.connection.on('error', err => {
@@ -31,9 +41,14 @@ const connectDB = async (retries = 5) => {
     mongoose.connection.on('disconnected', () => {
       console.log('MongoDB disconnected');
       // Attempt to reconnect
-      setTimeout(() => {
-        connectDB(retries - 1);
-      }, 5000);
+      if (retries > 0) {
+        console.log(`Attempting to reconnect... (${retries} retries left)`);
+        setTimeout(() => {
+          connectDB(retries - 1);
+        }, 5000);
+      } else {
+        console.error("❌ MongoDB reconnection failed after all retries");
+      }
     });
 
     mongoose.connection.on('connected', () => {
@@ -45,9 +60,17 @@ const connectDB = async (retries = 5) => {
       console.log('MongoDB connection closed through app termination');
       process.exit(0);
     });
+    
+    return conn;
   } catch (err) {
     console.error("❌ Connection failed:", err.message);
-    console.error("Error details:", err.name, err.reason); // Log more error details
+    console.error("Error name:", err.name);
+    console.error("Error code:", err.code);
+    
+    // Log specific error details based on error type
+    if (err.name === 'MongooseServerSelectionError') {
+      console.error("This usually indicates network connectivity issues or incorrect URI");
+    }
     
     if (retries > 0) {
       console.log(`Retrying connection... (${retries} retries left)`);

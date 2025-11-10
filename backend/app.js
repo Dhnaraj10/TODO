@@ -3,7 +3,10 @@ const express = require("express");
 const cors = require("cors"); // ✅ Import CORS
 const app = express();
 const mongoose = require("mongoose"); // For health check
-require("./connection/connection");
+const connectDB = require("./connection/connection");
+
+// Connect to MongoDB
+connectDB();
 
 const auth = require("./routes/auth");
 const list = require("./routes/list");
@@ -84,6 +87,57 @@ app.get('/health', async (req, res) => {
   }
   
   res.status(mongoStatus === 1 ? 200 : 503).json(status);
+});
+
+// Database test endpoint
+app.get('/db-test', async (req, res) => {
+  try {
+    console.log("Database test requested");
+    
+    // Check connection state
+    const state = mongoose.connection.readyState;
+    console.log("Current connection state:", state);
+    
+    if (state !== 1) {
+      return res.status(503).json({
+        status: "error",
+        message: "Database not connected",
+        state: state,
+        states: {
+          0: "disconnected",
+          1: "connected",
+          2: "connecting",
+          3: "disconnecting"
+        }
+      });
+    }
+    
+    // Try to ping the database
+    console.log("Attempting to ping database...");
+    const pingResult = await mongoose.connection.db.admin().ping();
+    console.log("Ping result:", pingResult);
+    
+    // Try a simple query
+    console.log("Attempting a simple query...");
+    const collections = await mongoose.connection.db.listCollections().toArray();
+    console.log("Available collections:", collections.map(c => c.name));
+    
+    res.json({
+      status: "success",
+      message: "Database connection is working",
+      ping: pingResult,
+      collections: collections.map(c => c.name),
+      state: state
+    });
+  } catch (error) {
+    console.error("Database test failed:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Database test failed",
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
 });
 
 // Add logging middleware
