@@ -67,7 +67,7 @@ const SignUp = () => {
         <h2>Create Your Account</h2>
         <p className="form-subtitle">Join TODO to manage tasks like a pro</p>
 
-        <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} required />
+        <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} required autoComplete="username" />
         <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
         <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} required autoComplete="new-password" />
         <input type="password" name="confirmPassword" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange} required autoComplete="new-password" />
