@@ -2,6 +2,7 @@
 const router = require("express").Router(); 
 const User = require("../models/user");
 const List = require("../models/list");
+
 router.get("/test", (req, res) => {
   res.send("✅ List router is working!");
 });
@@ -10,6 +11,8 @@ router.get("/test", (req, res) => {
 router.post("/addTask", async (req, res) => {
   try {
     const { title, body, user: userId, completed } = req.body;
+    console.log("Add task request received:", { title, userId }); // Add logging
+    
     const existingUser = await User.findById(userId);
     if (existingUser) {
       const list = new List({ 
@@ -27,7 +30,7 @@ router.post("/addTask", async (req, res) => {
     }
   } catch (error) {
     console.error("Add task error:", error);
-    res.status(500).json({ message: "Failed to add task" });
+    res.status(500).json({ message: "Failed to add task", error: error.message });
   }
 });
 
@@ -35,6 +38,8 @@ router.post("/addTask", async (req, res) => {
 router.put("/updateTask/:id", async (req, res) => {
   try {
     const { title, body, completed } = req.body;
+    console.log("Update task request received:", { id: req.params.id, title, completed }); // Add logging
+    
     const updateData = { title, body };
     
     // Only update completed field if it's provided
@@ -47,16 +52,23 @@ router.put("/updateTask/:id", async (req, res) => {
       updateData, 
       { new: true }
     );
+    
+    if (!updated) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    
     res.status(200).json({ message: "Task updated successfully", updated });
   } catch (error) {
     console.error("Update task error:", error);
-    res.status(500).json({ message: "Failed to update task" });
+    res.status(500).json({ message: "Failed to update task", error: error.message });
   }
 });
 
 // Delete Task
 router.delete("/deleteTask/:id", async (req, res) => {
   try {
+    console.log("Delete task request received:", { id: req.params.id }); // Add logging
+    
     const list = await List.findById(req.params.id);
     if (list) {
       const userId = list.user[0];
@@ -68,18 +80,20 @@ router.delete("/deleteTask/:id", async (req, res) => {
     }
   } catch (error) {
     console.error("Delete task error:", error);
-    res.status(500).json({ message: "Failed to delete task" });
+    res.status(500).json({ message: "Failed to delete task", error: error.message });
   }
 });
 
 // Get all tasks for a user
 router.get("/getTasks/:userId", async (req, res) => {
   try {
+    console.log("Get tasks request received:", { userId: req.params.userId }); // Add logging
+    
     const list = await List.find({ user: req.params.userId }).sort({ createdAt: -1 });
     res.status(200).json({ list });
   } catch (error) {
     console.error("Get tasks error:", error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong", error: error.message });
   }
 });
 

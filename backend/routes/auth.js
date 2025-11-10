@@ -11,6 +11,7 @@ const isValidEmail = (email) =>
 router.post("/register", async (req, res) => {
   try {
     const { email, username, password } = req.body;
+    console.log("Register request received:", { email, username }); // Add logging
 
     // Basic validations
     if (!email || !username || !password) {
@@ -25,47 +26,82 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
-    const existingUser = await User.findOne({ email });
+    // Check if user already exists
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { username }] 
+    });
+    
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists with this email" });
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+      if (existingUser.username === username) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
     }
 
-    const hashPassword = bcrypt.hashSync(password, 10);
-    const user = new User({ email, username, password: hashPassword });
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-    await user.save();
-    res.status(200).json({ user });
+    // Create new user
+    const newUser = new User({
+      email,
+      username,
+      password: hashedPassword,
+    });
+
+    const savedUser = await newUser.save();
+    console.log("User registered successfully:", savedUser.email); // Add logging
+
+    res.status(201).json({ 
+      message: "User registered successfully", 
+      user: { 
+        id: savedUser._id, 
+        email: savedUser.email, 
+        username: savedUser.username 
+      } 
+    });
   } catch (error) {
-    console.error("Registration error:", error); // Log the actual error for debugging
+    console.error("Registration error:", error); // Add error logging
     res.status(500).json({ message: "Registration failed", error: error.message });
   }
 });
 
-// Sign in Route
-router.post("/signin", async (req, res) => {
+// Login Route
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("Login request received:", { email }); // Add logging
 
+    // Basic validations
     if (!email || !password) {
-      return res.status(400).json({ message: "Both email and password are required" });
+      return res.status(400).json({ message: "Email and password are required" });
     }
 
+    // Check if user exists
     const user = await User.findOne({ email });
-
     if (!user) {
-      return res.status(400).json({ message: "User not found. Please sign up." });
+      return res.status(400).json({ message: "User not found" });
     }
 
-    const isPasswordCorrect = bcrypt.compareSync(password, user.password);
-
-    if (!isPasswordCorrect) {
-      return res.status(401).json({ message: "Incorrect password" });
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const { password: _, ...others } = user._doc;
-    res.status(200).json({ message: "Login successful", user: others });
+    console.log("User logged in successfully:", user.email); // Add logging
+
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username
+      }
+    });
   } catch (error) {
-    console.error("Login error:", error); // Log the actual error for debugging
+    console.error("Login error:", error); // Add error logging
     res.status(500).json({ message: "Login failed", error: error.message });
   }
 });
