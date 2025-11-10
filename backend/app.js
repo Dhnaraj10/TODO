@@ -2,6 +2,7 @@
 const express = require("express");
 const cors = require("cors"); // ✅ Import CORS
 const app = express();
+const mongoose = require("mongoose"); // For health check
 require("./connection/connection");
 
 const auth = require("./routes/auth");
@@ -49,6 +50,30 @@ app.get('/manifest.json', (req, res) => {
     "theme_color": "#000000",
     "background_color": "#ffffff"
   });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  const mongoStatus = mongoose.connection.readyState;
+  const status = {
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    mongodb: {
+      connected: mongoStatus === 1,
+      connecting: mongoStatus === 2,
+      disconnecting: mongoStatus === 3,
+      disconnected: mongoStatus === 0,
+      status: mongoStatus
+    },
+    uptime: process.uptime()
+  };
+  
+  if (mongoStatus === 1) {
+    status.mongodb.host = mongoose.connection.host;
+    status.mongodb.name = mongoose.connection.name;
+  }
+  
+  res.status(mongoStatus === 1 ? 200 : 503).json(status);
 });
 
 // Add logging middleware
