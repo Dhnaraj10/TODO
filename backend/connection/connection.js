@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
+    console.log("Attempting to connect to MongoDB...");
     const conn = await mongoose.connect(process.env.MONGO_URI || "mongodb+srv://dhanrajsingh:dhanraj10@cluster0.xsembmw.mongodb.net/?appName=Cluster0");
     console.log(`✅ Connected to MongoDB: ${conn.connection.host}`);
+    console.log(`✅ Database name: ${conn.connection.name}`);
   } catch (err) {
     console.error("❌ Connection failed:", err.message);
     console.error("Error details:", err); // Log full error details

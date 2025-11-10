@@ -14,13 +14,20 @@ const corsOptions = {
     "https://todo-eww6nj1cz-dhanraj-singhs-projects.vercel.app",
     "https://todo-neon-delta.vercel.app",
     "https://todo-fcc7vj8au-dhanraj-singhs-projects.vercel.app",
-    "https://todo-ber8v5yez-dhanraj-singhs-projects.vercel.app"
+    "https://todo-ber8v5yez-dhanraj-singhs-projects.vercel.app",
+    "https://todo-hgx8vwxq7-dhanraj-singhs-projects.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 
-app.use(cors(corsOptions));
+// Add CORS logging
+const corsWithOptions = cors(corsOptions);
+app.use((req, res, next) => {
+  console.log(`CORS Request from origin: ${req.get('Origin')}`);
+  corsWithOptions(req, res, next);
+});
 
 app.use(express.json());
 
