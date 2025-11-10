@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
-import Aboutus from './components/Aboutus/Aboutus';
 import Footer from './components/Footer/Footer';
 import SignIn from './components/SignUp_In/SignIn';
 import SignUp from './components/SignUp_In/SignUp';
