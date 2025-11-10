@@ -22,7 +22,6 @@ const Todo = () => {
   const navigate = useNavigate();
 
   const userId = user?._id;
-  const email = user?.email;
 
   // Fetch tasks
   useEffect(() => {
