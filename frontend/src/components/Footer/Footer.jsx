@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -10,10 +11,10 @@ const Footer = () => {
           Simplify your tasks. Amplify your productivity.
         </p>
         <div className="footer-links">
-          <button className="footer-link-button" onClick={() => {}}>About Us</button>
-          <button className="footer-link-button" onClick={() => {}}>Privacy</button>
-          <button className="footer-link-button" onClick={() => {}}>Terms</button>
-          <button className="footer-link-button" onClick={() => {}}>Contact</button>
+          <Link to="/about" className="footer-link-button">About Us</Link>
+          <Link to="/privacy" className="footer-link-button">Privacy</Link>
+          <Link to="/terms" className="footer-link-button">Terms</Link>
+          <Link to="/contact" className="footer-link-button">Contact</Link>
         </div>
         <p className="footer-credit">
           © {new Date().getFullYear()} TODO App. Built with 💻 by Dhanraj Singh.
