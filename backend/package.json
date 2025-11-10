@@ -5,8 +5,7 @@
   "main": "startup.js",
   "scripts": {
     "start": "node startup.js",
-    "dev": "nodemon index.js",
-    "test-db": "node test-mongo.js"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",

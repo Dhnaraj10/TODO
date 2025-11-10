@@ -2,20 +2,12 @@ services:
   - type: web
     name: todo-backend
     env: node
-    rootDir: backend
+    plan: free
+    region: singapore
     buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: MONGO_URI
-        value: mongodb+srv://dhanrajsingh:dhanraj10@cluster0.xsembmw.mongodb.net/?appName=Cluster0
-      - key: PORT
-        value: 1000
+        sync: false
       - key: FRONTEND_URL
-        value: https://todo-hgx8vwxq7-dhanraj-singhs-projects.vercel.app
-    plan: free
-    region: ohio
-    autoDeploy: true
-    buildFilter:
-      paths:
-        - backend/**
-    numInstances: 1
+        sync: false
