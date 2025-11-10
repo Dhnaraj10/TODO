@@ -57,6 +57,7 @@ const SignIn = () => {
           value={form.email}
           onChange={handleChange}
           required
+          autoComplete="email"
         />
         <input
           type="password"

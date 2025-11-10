@@ -12,7 +12,8 @@ const corsOptions = {
     process.env.FRONTEND_URL || "http://localhost:3000",
     "https://todo.vercel.app",
     "https://todo-eww6nj1cz-dhanraj-singhs-projects.vercel.app",
-    "https://todo-neon-delta.vercel.app"
+    "https://todo-neon-delta.vercel.app",
+    "https://todo-fcc7vj8au-dhanraj-singhs-projects.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
