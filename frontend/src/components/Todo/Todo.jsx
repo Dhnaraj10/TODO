@@ -107,7 +107,7 @@ const Todo = () => {
 
   return (
     <div className="todo-container">
-      <div className="todo-input-section">
+      <div className="todo-input-section" style={{color: 'black', backgroundColor: 'white'}}>
         <h2 className="todo-heading">TODO</h2>
         <input
           type="text"
@@ -115,6 +115,7 @@ const Todo = () => {
           className='todo-title'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          style={{color: 'black', backgroundColor: 'white', border: '1px solid #ccc'}}
         />
         <textarea
           placeholder='Body'
@@ -122,11 +123,12 @@ const Todo = () => {
           rows={3}
           value={body}
           onChange={(e) => setBody(e.target.value)}
+          style={{color: 'black', backgroundColor: 'white', border: '1px solid #ccc'}}
         />
-        <button className='add-btn' onClick={handleAdd}>Add Task</button>
+        <button className='add-btn' onClick={handleAdd} style={{backgroundColor: 'black', color: 'white'}}>Add Task</button>
       </div>
       
-      <div className="todo-list">
+      <div className="todo-list" style={{color: 'black', backgroundColor: 'white'}}>
         {isLoggedIn ? (
           tasks.length > 0 ? (
             tasks.map((task) => (
@@ -136,6 +138,7 @@ const Todo = () => {
                 body={task.body}
                 onDelete={() => handleDelete(task._id)}
                 onEdit={() => handleUpdate(task)}
+                style={{color: 'black', backgroundColor: 'white'}}
               />
             ))
           ) : (
