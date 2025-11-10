@@ -53,7 +53,7 @@ app.get('/manifest.json', (req, res) => {
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', async (req, res) => {
   const mongoStatus = mongoose.connection.readyState;
   const status = {
     status: 'OK',
@@ -71,6 +71,16 @@ app.get('/health', (req, res) => {
   if (mongoStatus === 1) {
     status.mongodb.host = mongoose.connection.host;
     status.mongodb.name = mongoose.connection.name;
+    
+    // Test database connectivity
+    try {
+      await mongoose.connection.db.admin().ping();
+      status.mongodb.ping = "successful";
+    } catch (err) {
+      status.mongodb.ping = "failed";
+      status.mongodb.pingError = err.message;
+      status.status = "Degraded";
+    }
   }
   
   res.status(mongoStatus === 1 ? 200 : 503).json(status);

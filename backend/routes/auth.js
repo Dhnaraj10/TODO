@@ -2,6 +2,7 @@
 const router = require("express").Router(); 
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 
 // Email validation regex
 const isValidEmail = (email) =>
@@ -12,6 +13,15 @@ router.post("/register", async (req, res) => {
   try {
     const { email, username, password } = req.body;
     console.log("Register request received:", { email, username }); // Add logging
+    
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.log("Database not connected, current state:", mongoose.connection.readyState);
+      return res.status(500).json({ 
+        message: "Database connection error. Please try again later.",
+        error: "Database not connected"
+      });
+    }
 
     // Basic validations
     if (!email || !username || !password) {
@@ -30,6 +40,7 @@ router.post("/register", async (req, res) => {
     }
 
     // Check if user already exists
+    console.log("Checking for existing user...");
     const existingUser = await User.findOne({ 
       $or: [{ email }, { username }] 
     });
@@ -70,6 +81,16 @@ router.post("/register", async (req, res) => {
     });
   } catch (error) {
     console.error("Registration error:", error); // Add error logging
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    
+    if (error.name === 'MongoNetworkError' || error.name === 'MongooseServerSelectionError') {
+      return res.status(500).json({ 
+        message: "Database connection error. Please try again later.",
+        error: error.message 
+      });
+    }
+    
     res.status(500).json({ message: "Registration failed", error: error.message });
   }
 });
@@ -79,6 +100,15 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log("Login request received:", { email }); // Add logging
+    
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.log("Database not connected, current state:", mongoose.connection.readyState);
+      return res.status(500).json({ 
+        message: "Database connection error. Please try again later.",
+        error: "Database not connected"
+      });
+    }
 
     // Basic validations
     if (!email || !password) {
@@ -113,6 +143,16 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error); // Add error logging
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    
+    if (error.name === 'MongoNetworkError' || error.name === 'MongooseServerSelectionError') {
+      return res.status(500).json({ 
+        message: "Database connection error. Please try again later.",
+        error: error.message 
+      });
+    }
+    
     res.status(500).json({ message: "Login failed", error: error.message });
   }
 });
