@@ -8,34 +8,10 @@ const auth = require("./routes/auth");
 const list = require("./routes/list");
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    // List of allowed origins
-    const allowedOrigins = [
-      process.env.FRONTEND_URL || "http://localhost:3000",
-      // Allow all vercel.app domains
-      /\.vercel\.app$/,
-      // You can add other specific domains here
-    ];
-    
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Check if the origin matches any of our allowed origins
-    const isAllowed = allowedOrigins.some((allowedOrigin) => {
-      if (typeof allowedOrigin === 'string') {
-        return origin === allowedOrigin;
-      } else if (allowedOrigin instanceof RegExp) {
-        return allowedOrigin.test(origin);
-      }
-      return false;
-    });
-    
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: [
+    process.env.FRONTEND_URL || "http://localhost:3000",
+    "https://todo.vercel.app"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 };
