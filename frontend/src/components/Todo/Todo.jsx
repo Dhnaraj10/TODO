@@ -14,8 +14,14 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:1000';
 const Todo = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [category, setCategory] = useState('General');
+  const [dueDate, setDueDate] = useState('');
+  const [priority, setPriority] = useState('medium');
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('All');
+  const [filterPriority, setFilterPriority] = useState('All');
 
   const user = useSelector((state) => state.auth.user);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -60,13 +66,19 @@ const Todo = () => {
           title,
           body,
           user: userId,
-          completed: false // New tasks are not completed by default
+          completed: false, // New tasks are not completed by default
+          category,
+          dueDate: dueDate || null,
+          priority
         });
 
         if (res.data.message === "Task added successfully") {
           setTasks([...tasks, res.data.task]);
           setTitle('');
           setBody('');
+          setCategory('General');
+          setDueDate('');
+          setPriority('medium');
           toast.success("Task added successfully");
         } else {
           toast.error(res.data.message || "Failed to add task");
@@ -140,42 +152,130 @@ const Todo = () => {
     }
   };
 
+  // Filter tasks based on search term, category, and priority
+  const filteredTasks = tasks.filter(task => {
+    const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          task.body.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = filterCategory === 'All' || task.category === filterCategory;
+    
+    const matchesPriority = filterPriority === 'All' || task.priority === filterPriority;
+    
+    return matchesSearch && matchesCategory && matchesPriority;
+  });
+
+  // Get unique categories for filter dropdown
+  const uniqueCategories = [...new Set(tasks.map(task => task.category))];
+
   return (
     <div className="todo-container">
       <div className="todo-content">
         <div className="todo-input-section">
           <h2 className="todo-heading">Task Management</h2>
+          
+          {/* Search and Filter Section */}
+          <div className="search-filter-section">
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            
+            <div className="filter-controls">
+              <select 
+                className="filter-select"
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+              >
+                <option value="All">All Categories</option>
+                {uniqueCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+              
+              <select 
+                className="filter-select"
+                value={filterPriority}
+                onChange={(e) => setFilterPriority(e.target.value)}
+              >
+                <option value="All">All Priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+          
+          {/* Task Creation Form */}
           <input
             type="text"
-            placeholder='Task Title'
-            className='todo-title'
+            placeholder="Task Title"
+            className="todo-title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+          
           <textarea
-            placeholder='Task Description'
-            className='todo-body'
+            placeholder="Task Description"
+            className="todo-body"
             rows={3}
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
-          <button className='add-btn' onClick={handleAdd}>Add Task</button>
+          
+          <div className="task-options">
+            <select 
+              className="task-select"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="General">General</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Health">Health</option>
+            </select>
+            
+            <input
+              type="date"
+              className="task-date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+            />
+            
+            <select 
+              className="task-select"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+            >
+              <option value="low">Low Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+          </div>
+          
+          <button className="add-btn" onClick={handleAdd}>Add Task</button>
         </div>
         
         <div className="todo-list">
           {isLoggedIn ? (
-            tasks.length > 0 ? (
-              tasks.map((task) => (
+            filteredTasks.length > 0 ? (
+              filteredTasks.map((task) => (
                 <TodoCards
                   key={task._id}
                   title={task.title}
                   body={task.body}
+                  category={task.category}
+                  dueDate={task.dueDate}
+                  priority={task.priority}
                   onDelete={() => handleDelete(task._id)}
                   onEdit={() => handleUpdate(task)}
                 />
               ))
             ) : (
-              <p className="no-tasks-message">No tasks found. Add your first task above!</p>
+              <p className="no-tasks-message">No tasks found. {searchTerm || filterCategory !== 'All' || filterPriority !== 'All' ? 'Try changing your filters.' : 'Add your first task above!'}</p>
             )
           ) : (
             <p className="login-message">Please log in to see your tasks</p>

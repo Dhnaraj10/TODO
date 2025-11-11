@@ -174,6 +174,9 @@ const Profile = () => {
                   key={task._id}
                   title={task.title}
                   body={task.body}
+                  category={task.category}
+                  dueDate={task.dueDate}
+                  priority={task.priority}
                   onDelete={() => handleDelete(task._id)}
                   onEdit={() => handleUpdate(task)}
                 />
@@ -193,6 +196,9 @@ const Profile = () => {
                   <TodoCards
                     title={task.title}
                     body={task.body}
+                    category={task.category}
+                    dueDate={task.dueDate}
+                    priority={task.priority}
                     onDelete={() => handleDelete(task._id)}
                     onEdit={() => handleUpdate(task)}
                   />

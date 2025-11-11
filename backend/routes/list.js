@@ -10,8 +10,8 @@ router.get("/test", (req, res) => {
 // Create Task
 router.post("/addTask", async (req, res) => {
   try {
-    const { title, body, user: userId, completed } = req.body;
-    console.log("Add task request received:", { title, body, userId, completed }); // Add logging
+    const { title, body, user: userId, completed, category, dueDate, priority } = req.body;
+    console.log("Add task request received:", { title, body, userId, completed, category, dueDate, priority }); // Add logging
     
     // Validate required fields
     if (!title || !body) {
@@ -30,7 +30,10 @@ router.post("/addTask", async (req, res) => {
         title, 
         body, 
         user: [existingUser._id],
-        completed: completed || false
+        completed: completed || false,
+        category: category || "General",
+        dueDate: dueDate || null,
+        priority: priority || "medium"
       });
       await list.save();
       existingUser.list.push(list._id);
@@ -49,14 +52,26 @@ router.post("/addTask", async (req, res) => {
 // Update Task
 router.put("/updateTask/:id", async (req, res) => {
   try {
-    const { title, body, completed } = req.body;
-    console.log("Update task request received:", { id: req.params.id, title, body, completed }); // Add logging
+    const { title, body, completed, category, dueDate, priority } = req.body;
+    console.log("Update task request received:", { id: req.params.id, title, body, completed, category, dueDate, priority }); // Add logging
     
     const updateData = { title, body };
     
-    // Only update completed field if it's provided
+    // Only update fields if they're provided
     if (typeof completed !== 'undefined') {
       updateData.completed = completed;
+    }
+    
+    if (category) {
+      updateData.category = category;
+    }
+    
+    if (dueDate !== undefined) {
+      updateData.dueDate = dueDate;
+    }
+    
+    if (priority) {
+      updateData.priority = priority;
     }
     
     const updated = await List.findByIdAndUpdate(

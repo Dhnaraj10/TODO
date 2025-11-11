@@ -17,6 +17,19 @@ const listSchema = new mongoose.Schema({
   completed: {
     type: Boolean,
     default: false
+  },
+  category: {
+    type: String,
+    default: "General"
+  },
+  dueDate: {
+    type: Date,
+    default: null
+  },
+  priority: {
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium'
   }
 }, { timestamps: true }); 
 
