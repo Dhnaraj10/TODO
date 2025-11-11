@@ -30,6 +30,21 @@ const listSchema = new mongoose.Schema({
     type: String,
     enum: ['low', 'medium', 'high'],
     default: 'medium'
+  },
+  recurring: {
+    type: {
+      type: String,
+      enum: ['daily', 'weekly', 'monthly', 'yearly', null],
+      default: null
+    },
+    startDate: {
+      type: Date,
+      default: null
+    },
+    endDate: {
+      type: Date,
+      default: null
+    }
   }
 }, { timestamps: true }); 
 

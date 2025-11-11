@@ -1,9 +1,9 @@
 import React from 'react';
 import './Todo.css';
 import { MdDelete } from 'react-icons/md';
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaEye } from 'react-icons/fa';
 
-const TodoCards = ({ title, body, category, dueDate, priority, onDelete, onEdit }) => {
+const TodoCards = ({ title, body, category, dueDate, priority, recurring, onDelete, onEdit, onView }) => {
   // Format the due date for display
   const formattedDueDate = dueDate ? new Date(dueDate).toLocaleDateString() : null;
   
@@ -26,22 +26,28 @@ const TodoCards = ({ title, body, category, dueDate, priority, onDelete, onEdit 
       
       <p>{body}</p>
       
-      {(formattedDueDate || priority) && (
-        <div className="task-meta">
-          {formattedDueDate && (
-            <span className="due-date">
-              Due: {formattedDueDate}
-            </span>
-          )}
-          {priority && (
-            <span className={`priority-badge ${getPriorityClass(priority)}`}>
-              {priority.charAt(0).toUpperCase() + priority.slice(1)}
-            </span>
-          )}
-        </div>
-      )}
+      <div className="task-meta">
+        {formattedDueDate && (
+          <span className="due-date">
+            Due: {formattedDueDate}
+          </span>
+        )}
+        {priority && (
+          <span className={`priority-badge ${getPriorityClass(priority)}`}>
+            {priority.charAt(0).toUpperCase() + priority.slice(1)}
+          </span>
+        )}
+        {recurring && recurring.type && (
+          <span className="recurring-badge">
+            Repeats
+          </span>
+        )}
+      </div>
       
       <div className="todo-card-actions">
+        <button className="view-btn" onClick={onView}>
+          <FaEye /> View
+        </button>
         <button className="update-btn" onClick={onEdit}>
           <FaEdit /> Update
         </button>

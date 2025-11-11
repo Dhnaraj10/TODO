@@ -10,8 +10,8 @@ router.get("/test", (req, res) => {
 // Create Task
 router.post("/addTask", async (req, res) => {
   try {
-    const { title, body, user: userId, completed, category, dueDate, priority } = req.body;
-    console.log("Add task request received:", { title, body, userId, completed, category, dueDate, priority }); // Add logging
+    const { title, body, user: userId, completed, category, dueDate, priority, recurring } = req.body;
+    console.log("Add task request received:", { title, body, userId, completed, category, dueDate, priority, recurring }); // Add logging
     
     // Validate required fields
     if (!title || !body) {
@@ -33,7 +33,8 @@ router.post("/addTask", async (req, res) => {
         completed: completed || false,
         category: category || "General",
         dueDate: dueDate || null,
-        priority: priority || "medium"
+        priority: priority || "medium",
+        recurring: recurring || { type: null, startDate: null, endDate: null }
       });
       await list.save();
       existingUser.list.push(list._id);
@@ -52,8 +53,8 @@ router.post("/addTask", async (req, res) => {
 // Update Task
 router.put("/updateTask/:id", async (req, res) => {
   try {
-    const { title, body, completed, category, dueDate, priority } = req.body;
-    console.log("Update task request received:", { id: req.params.id, title, body, completed, category, dueDate, priority }); // Add logging
+    const { title, body, completed, category, dueDate, priority, recurring } = req.body;
+    console.log("Update task request received:", { id: req.params.id, title, body, completed, category, dueDate, priority, recurring }); // Add logging
     
     const updateData = { title, body };
     
@@ -72,6 +73,10 @@ router.put("/updateTask/:id", async (req, res) => {
     
     if (priority) {
       updateData.priority = priority;
+    }
+    
+    if (recurring) {
+      updateData.recurring = recurring;
     }
     
     const updated = await List.findByIdAndUpdate(
