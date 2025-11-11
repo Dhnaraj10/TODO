@@ -67,7 +67,7 @@
   flex-wrap: wrap;
 }
 
-.task-select, .task-date {
+.task-select, .task-date, .task-time {
   flex: 1;
   min-width: 120px;
   padding: 10px;
@@ -79,7 +79,7 @@
   border: 1px solid #333;
 }
 
-.task-select:focus, .task-date:focus {
+.task-select:focus, .task-date:focus, .task-time:focus {
   outline: none;
   border: 1px solid #555;
 }
@@ -242,6 +242,13 @@
   flex: 1;
 }
 
+.todo-card-body {
+  color: #ccc;
+  margin-bottom: 20px;
+  flex-grow: 1;
+  line-height: 1.6;
+}
+
 .task-category {
   background-color: #333;
   color: #fff;
@@ -258,6 +265,8 @@
   justify-content: space-between;
   margin-bottom: 15px;
   font-size: 0.85rem;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .due-date {
@@ -286,36 +295,38 @@
   color: #000;
 }
 
-.todo-card p {
-  color: #ccc;
-  margin-bottom: 20px;
-  flex-grow: 1;
-  line-height: 1.6;
+.recurring-badge {
+  background-color: #666;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .todo-card-actions {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
   margin-top: auto;
-  gap: 5px;
 }
 
 .view-btn,
 .update-btn,
 .delete-btn,
 .complete-btn {
-  padding: 8px 12px;
+  padding: 10px;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   border-radius: 6px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   cursor: pointer;
   transition: all 0.3s;
   font-weight: 500;
-  flex: 1;
-  justify-content: center;
 }
 
 .view-btn {
@@ -492,6 +503,31 @@
 
 .search-results p {
   margin: 0;
+}
+
+.search-results-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.search-result-item {
+  background-color: #222;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #333;
+}
+
+.search-result-item h4 {
+  margin: 0 0 10px 0;
+  color: #fff;
+}
+
+.search-result-item p {
+  margin: 0;
+  color: #ccc;
+  font-size: 0.9rem;
 }
 
 /* View Overlay */
@@ -725,6 +761,10 @@
   }
   
   .task-options {
+    flex-direction: column;
+  }
+  
+  .recurring-options {
     flex-direction: column;
   }
   

@@ -7,11 +7,13 @@ const Update = ({ task, onUpdate, onClose }) => {
   const [body, setBody] = useState(task.body);
   const [category, setCategory] = useState(task.category || 'General');
   const [dueDate, setDueDate] = useState(task.dueDate ? task.dueDate.split('T')[0] : '');
+  const [time, setTime] = useState(task.time || '');
+  const [endTime, setEndTime] = useState(task.endTime || '');
   const [priority, setPriority] = useState(task.priority || 'medium');
   const [recurring, setRecurring] = useState(task.recurring || {
     type: null,
-    startDate: '',
-    endDate: ''
+    startTime: '',
+    endTime: ''
   });
   const [showRecurringOptions, setShowRecurringOptions] = useState(!!(task.recurring && task.recurring.type));
 
@@ -23,6 +25,8 @@ const Update = ({ task, onUpdate, onClose }) => {
         body,
         category,
         dueDate: dueDate || null,
+        time: time || null,
+        endTime: endTime || null,
         priority
       };
       
@@ -30,9 +34,13 @@ const Update = ({ task, onUpdate, onClose }) => {
       if (recurring.type) {
         updatedTask.recurring = {
           type: recurring.type,
-          startDate: recurring.startDate || null,
-          endDate: recurring.endDate || null
+          startTime: recurring.startTime || null,
+          endTime: recurring.endTime || null
         };
+        // Remove dueDate for recurring tasks
+        delete updatedTask.dueDate;
+        delete updatedTask.time;
+        delete updatedTask.endTime;
       }
       
       onUpdate(updatedTask);
@@ -82,12 +90,29 @@ const Update = ({ task, onUpdate, onClose }) => {
             <option value="Health">Health</option>
           </select>
           
-          <input
-            type="date"
-            className="task-date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
+          {!recurring.type && (
+            <>
+              <input
+                type="date"
+                className="task-date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+              />
+              <input
+                type="time"
+                className="task-time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+              />
+              <input
+                type="time"
+                className="task-time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                placeholder="End Time"
+              />
+            </>
+          )}
           
           <select 
             className="task-select"
@@ -126,18 +151,18 @@ const Update = ({ task, onUpdate, onClose }) => {
               {recurring.type && (
                 <>
                   <input
-                    type="date"
-                    className="task-date"
-                    placeholder="Start Date"
-                    value={recurring.startDate}
-                    onChange={(e) => setRecurring({...recurring, startDate: e.target.value})}
+                    type="time"
+                    className="task-time"
+                    placeholder="Start Time"
+                    value={recurring.startTime}
+                    onChange={(e) => setRecurring({...recurring, startTime: e.target.value})}
                   />
                   <input
-                    type="date"
-                    className="task-date"
-                    placeholder="End Date (Optional)"
-                    value={recurring.endDate}
-                    onChange={(e) => setRecurring({...recurring, endDate: e.target.value})}
+                    type="time"
+                    className="task-time"
+                    placeholder="End Time (Optional)"
+                    value={recurring.endTime}
+                    onChange={(e) => setRecurring({...recurring, endTime: e.target.value})}
                   />
                 </>
               )}

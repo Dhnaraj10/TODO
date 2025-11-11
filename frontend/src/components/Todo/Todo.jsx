@@ -18,10 +18,12 @@ const Todo = () => {
   const [category, setCategory] = useState('General');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('medium');
+  const [time, setTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [recurring, setRecurring] = useState({
     type: null,
-    startDate: '',
-    endDate: ''
+    startTime: '',
+    endTime: ''
   });
   const [showRecurringOptions, setShowRecurringOptions] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -78,16 +80,22 @@ const Todo = () => {
           completed: false, // New tasks are not completed by default
           category,
           dueDate: dueDate || null,
-          priority
+          priority,
+          time: time || null,
+          endTime: endTime || null
         };
 
         // Add recurring data if it exists
         if (recurring.type) {
           taskData.recurring = {
             type: recurring.type,
-            startDate: recurring.startDate || null,
-            endDate: recurring.endDate || null
+            startTime: recurring.startTime || null,
+            endTime: recurring.endTime || null
           };
+          // Remove dueDate for recurring tasks
+          delete taskData.dueDate;
+          delete taskData.time;
+          delete taskData.endTime;
         }
 
         const res = await axios.post(`${BASE_URL}/api/v2/addTask`, taskData);
@@ -99,10 +107,12 @@ const Todo = () => {
           setCategory('General');
           setDueDate('');
           setPriority('medium');
+          setTime('');
+          setEndTime('');
           setRecurring({
             type: null,
-            startDate: '',
-            endDate: ''
+            startTime: '',
+            endTime: ''
           });
           setShowRecurringOptions(false);
           toast.success("Task added successfully");
@@ -146,7 +156,7 @@ const Todo = () => {
     
     // Otherwise, this is for marking as complete
     try {
-      const updatedTask = { ...task, completed: !task.completed };
+      const updatedTask = { ...task, completed: true };
       const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${task._id}`, updatedTask);
       if (res.data.message === "Task updated successfully") {
         setTasks(tasks.filter(t => t._id !== task._id));
@@ -193,6 +203,14 @@ const Todo = () => {
   // Get unique categories for filter dropdown
   const uniqueCategories = [...new Set(tasks.map(task => task.category))];
 
+  // Close search and clear search data
+  const closeSearch = () => {
+    setShowSearch(false);
+    setSearchTerm('');
+    setFilterCategory('All');
+    setFilterPriority('All');
+  };
+
   return (
     <div className="todo-container">
       <div className="todo-content">
@@ -234,12 +252,29 @@ const Todo = () => {
               <option value="Health">Health</option>
             </select>
             
-            <input
-              type="date"
-              className="task-date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-            />
+            {!recurring.type && (
+              <>
+                <input
+                  type="date"
+                  className="task-date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
+                <input
+                  type="time"
+                  className="task-time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                />
+                <input
+                  type="time"
+                  className="task-time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  placeholder="End Time"
+                />
+              </>
+            )}
             
             <select 
               className="task-select"
@@ -278,18 +313,18 @@ const Todo = () => {
                 {recurring.type && (
                   <>
                     <input
-                      type="date"
-                      className="task-date"
-                      placeholder="Start Date"
-                      value={recurring.startDate}
-                      onChange={(e) => setRecurring({...recurring, startDate: e.target.value})}
+                      type="time"
+                      className="task-time"
+                      placeholder="Start Time"
+                      value={recurring.startTime}
+                      onChange={(e) => setRecurring({...recurring, startTime: e.target.value})}
                     />
                     <input
-                      type="date"
-                      className="task-date"
-                      placeholder="End Date (Optional)"
-                      value={recurring.endDate}
-                      onChange={(e) => setRecurring({...recurring, endDate: e.target.value})}
+                      type="time"
+                      className="task-time"
+                      placeholder="End Time (Optional)"
+                      value={recurring.endTime}
+                      onChange={(e) => setRecurring({...recurring, endTime: e.target.value})}
                     />
                   </>
                 )}
@@ -312,6 +347,8 @@ const Todo = () => {
                   dueDate={task.dueDate}
                   priority={task.priority}
                   recurring={task.recurring}
+                  time={task.time}
+                  endTime={task.endTime}
                   onDelete={() => handleDelete(task._id)}
                   onEdit={() => handleUpdate(task)}
                   onView={() => setViewingTask(task)}
@@ -328,11 +365,11 @@ const Todo = () => {
       
       {/* Search Overlay */}
       {showSearch && (
-        <div className="search-overlay" onClick={() => setShowSearch(false)}>
+        <div className="search-overlay" onClick={closeSearch}>
           <div className="search-modal" onClick={(e) => e.stopPropagation()}>
             <div className="search-header">
               <h2>Search Tasks</h2>
-              <button className="close-search-btn" onClick={() => setShowSearch(false)}>
+              <button className="close-search-btn" onClick={closeSearch}>
                 <FaTimes />
               </button>
             </div>
@@ -369,14 +406,25 @@ const Todo = () => {
                   <option value="low">Low</option>
                 </select>
               </div>
-            </div>
-            
-            <div className="search-results">
-              {searchTerm || filterCategory !== 'All' || filterPriority !== 'All' ? (
-                <p>{filteredTasks.length} tasks found</p>
-              ) : (
-                <p>Enter search term or select filters to find tasks</p>
-              )}
+              
+              {/* Search Results */}
+              <div className="search-results">
+                {searchTerm || filterCategory !== 'All' || filterPriority !== 'All' ? (
+                  <div>
+                    <p>{filteredTasks.length} tasks found</p>
+                    <div className="search-results-list">
+                      {filteredTasks.map(task => (
+                        <div key={task._id} className="search-result-item">
+                          <h4>{task.title}</h4>
+                          <p>{task.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p>Enter search term or select filters to find tasks</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -398,9 +446,15 @@ const Todo = () => {
                 {viewingTask.category && (
                   <span className="task-category">{viewingTask.category}</span>
                 )}
-                {viewingTask.dueDate && (
+                {viewingTask.dueDate && !viewingTask.recurring?.type && (
                   <span className="due-date">
                     Due: {new Date(viewingTask.dueDate).toLocaleDateString()}
+                  </span>
+                )}
+                {viewingTask.time && !viewingTask.recurring?.type && (
+                  <span className="time-info">
+                    Time: {viewingTask.time}
+                    {viewingTask.endTime && ` - ${viewingTask.endTime}`}
                   </span>
                 )}
                 {viewingTask.priority && (
@@ -422,14 +476,10 @@ const Todo = () => {
                   <p>
                     <strong>Recurring:</strong> {viewingTask.recurring.type.charAt(0).toUpperCase() + viewingTask.recurring.type.slice(1)}
                   </p>
-                  {viewingTask.recurring.startDate && (
+                  {viewingTask.recurring.startTime && (
                     <p>
-                      <strong>Start Date:</strong> {new Date(viewingTask.recurring.startDate).toLocaleDateString()}
-                    </p>
-                  )}
-                  {viewingTask.recurring.endDate && (
-                    <p>
-                      <strong>End Date:</strong> {new Date(viewingTask.recurring.endDate).toLocaleDateString()}
+                      <strong>Time:</strong> {viewingTask.recurring.startTime}
+                      {viewingTask.recurring.endTime && ` - ${viewingTask.recurring.endTime}`}
                     </p>
                   )}
                 </div>

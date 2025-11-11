@@ -3,7 +3,7 @@ import './Todo.css';
 import { MdDelete } from 'react-icons/md';
 import { FaEdit, FaEye } from 'react-icons/fa';
 
-const TodoCards = ({ title, body, category, dueDate, priority, recurring, onDelete, onEdit, onView }) => {
+const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, recurring, onDelete, onEdit, onView }) => {
   // Format the due date for display
   const formattedDueDate = dueDate ? new Date(dueDate).toLocaleDateString() : null;
   
@@ -24,12 +24,18 @@ const TodoCards = ({ title, body, category, dueDate, priority, recurring, onDele
         {category && <span className="task-category">{category}</span>}
       </div>
       
-      <p>{body}</p>
+      <p className="todo-card-body">{body}</p>
       
       <div className="task-meta">
-        {formattedDueDate && (
+        {formattedDueDate && !recurring?.type && (
           <span className="due-date">
             Due: {formattedDueDate}
+          </span>
+        )}
+        {time && !recurring?.type && (
+          <span className="time-info">
+            {time}
+            {endTime && ` - ${endTime}`}
           </span>
         )}
         {priority && (
@@ -39,7 +45,7 @@ const TodoCards = ({ title, body, category, dueDate, priority, recurring, onDele
         )}
         {recurring && recurring.type && (
           <span className="recurring-badge">
-            Repeats
+            Repeats {recurring.type}
           </span>
         )}
       </div>

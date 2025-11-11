@@ -10,8 +10,8 @@ router.get("/test", (req, res) => {
 // Create Task
 router.post("/addTask", async (req, res) => {
   try {
-    const { title, body, user: userId, completed, category, dueDate, priority, recurring } = req.body;
-    console.log("Add task request received:", { title, body, userId, completed, category, dueDate, priority, recurring }); // Add logging
+    const { title, body, user: userId, completed, category, dueDate, time, endTime, priority, recurring } = req.body;
+    console.log("Add task request received:", { title, body, userId, completed, category, dueDate, time, endTime, priority, recurring }); // Add logging
     
     // Validate required fields
     if (!title || !body) {
@@ -33,8 +33,10 @@ router.post("/addTask", async (req, res) => {
         completed: completed || false,
         category: category || "General",
         dueDate: dueDate || null,
+        time: time || null,
+        endTime: endTime || null,
         priority: priority || "medium",
-        recurring: recurring || { type: null, startDate: null, endDate: null }
+        recurring: recurring || { type: null, startTime: null, endTime: null }
       });
       await list.save();
       existingUser.list.push(list._id);
@@ -53,8 +55,8 @@ router.post("/addTask", async (req, res) => {
 // Update Task
 router.put("/updateTask/:id", async (req, res) => {
   try {
-    const { title, body, completed, category, dueDate, priority, recurring } = req.body;
-    console.log("Update task request received:", { id: req.params.id, title, body, completed, category, dueDate, priority, recurring }); // Add logging
+    const { title, body, completed, category, dueDate, time, endTime, priority, recurring } = req.body;
+    console.log("Update task request received:", { id: req.params.id, title, body, completed, category, dueDate, time, endTime, priority, recurring }); // Add logging
     
     const updateData = { title, body };
     
@@ -69,6 +71,14 @@ router.put("/updateTask/:id", async (req, res) => {
     
     if (dueDate !== undefined) {
       updateData.dueDate = dueDate;
+    }
+    
+    if (time !== undefined) {
+      updateData.time = time;
+    }
+    
+    if (endTime !== undefined) {
+      updateData.endTime = endTime;
     }
     
     if (priority) {

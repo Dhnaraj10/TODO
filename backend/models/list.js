@@ -26,6 +26,14 @@ const listSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  time: {
+    type: String,
+    default: null
+  },
+  endTime: {
+    type: String,
+    default: null
+  },
   priority: {
     type: String,
     enum: ['low', 'medium', 'high'],
@@ -37,12 +45,12 @@ const listSchema = new mongoose.Schema({
       enum: ['daily', 'weekly', 'monthly', 'yearly', null],
       default: null
     },
-    startDate: {
-      type: Date,
+    startTime: {
+      type: String,
       default: null
     },
-    endDate: {
-      type: Date,
+    endTime: {
+      type: String,
       default: null
     }
   }
