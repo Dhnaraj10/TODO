@@ -7,6 +7,9 @@ const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, re
   // Format the due date for display
   const formattedDueDate = dueDate ? new Date(dueDate).toLocaleDateString() : null;
   
+  // Truncate body text to first 3 characters and add ellipsis
+  const truncatedBody = body ? (body.length > 3 ? body.substring(0, 3) + '...' : body) : '';
+  
   // Get priority class for styling
   const getPriorityClass = (priority) => {
     switch (priority) {
@@ -20,11 +23,11 @@ const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, re
   return (
     <div className={`todo-card ${getPriorityClass(priority)}`}>
       <div className="todo-card-header">
-        <h3>{title}</h3>
+        <h3 className="todo-card-title">{title}</h3>
         {category && <span className="task-category">{category}</span>}
       </div>
       
-      <p className="todo-card-body">{body}</p>
+      <p className="todo-card-body">{truncatedBody}</p>
       
       <div className="task-meta">
         {formattedDueDate && !recurring?.type && (
