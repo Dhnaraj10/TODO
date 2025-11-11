@@ -3,7 +3,7 @@ import './Todo.css';
 import { MdDelete } from 'react-icons/md';
 import { FaEdit, FaEye } from 'react-icons/fa';
 
-const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, recurring, onDelete, onEdit, onView }) => {
+const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, recurring, completed, onDelete, onEdit, onView }) => {
   // Format the due date for display
   const formattedDueDate = dueDate ? new Date(dueDate).toLocaleDateString() : null;
   
@@ -58,7 +58,7 @@ const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, re
           <FaEdit /> Update
         </button>
         <button className="complete-btn" onClick={onEdit}>
-          ✓ Complete
+          {completed ? '✓ Active' : '✓ Complete'}
         </button>
         <button className="delete-btn" onClick={onDelete}>
           <MdDelete /> Delete

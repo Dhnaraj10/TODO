@@ -349,6 +349,7 @@ const Todo = () => {
                   recurring={task.recurring}
                   time={task.time}
                   endTime={task.endTime}
+                  completed={task.completed}
                   onDelete={() => handleDelete(task._id)}
                   onEdit={() => handleUpdate(task)}
                   onView={() => setViewingTask(task)}
@@ -414,7 +415,14 @@ const Todo = () => {
                     <p>{filteredTasks.length} tasks found</p>
                     <div className="search-results-list">
                       {filteredTasks.map(task => (
-                        <div key={task._id} className="search-result-item">
+                        <div 
+                          key={task._id} 
+                          className="search-result-item"
+                          onClick={() => {
+                            setViewingTask(task);
+                            closeSearch();
+                          }}
+                        >
                           <h4>{task.title}</h4>
                           <p>{task.body}</p>
                         </div>
@@ -425,6 +433,7 @@ const Todo = () => {
                   <p>Enter search term or select filters to find tasks</p>
                 )}
               </div>
+
             </div>
           </div>
         </div>

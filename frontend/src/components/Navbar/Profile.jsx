@@ -60,21 +60,44 @@ const Profile = () => {
     try {
       // Toggle completed status
       const updatedTask = { ...task, completed: !task.completed };
-      const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${task._id}`, updatedTask);
       
-      if (res.data.message === "Task updated successfully") {
-        if (updatedTask.completed) {
-          // Move to completed tasks
-          setTasks(tasks.filter(t => t._id !== task._id));
-          setCompletedTasks([...completedTasks, updatedTask]);
+      // For recurring tasks, we just toggle the status without moving between lists
+      if (task.recurring && task.recurring.type) {
+        const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${task._id}`, updatedTask);
+        
+        if (res.data.message === "Task updated successfully") {
+          // Update the task in its current list
+          if (task.completed) {
+            // Was completed, now active
+            setCompletedTasks(completedTasks.filter(t => t._id !== task._id));
+            setTasks([...tasks, updatedTask]);
+          } else {
+            // Was active, now completed
+            setTasks(tasks.filter(t => t._id !== task._id));
+            setCompletedTasks([...completedTasks, updatedTask]);
+          }
+          toast.success("Task updated successfully");
         } else {
-          // Move to active tasks
-          setCompletedTasks(completedTasks.filter(t => t._id !== task._id));
-          setTasks([...tasks, updatedTask]);
+          toast.error("Failed to update task");
         }
-        toast.success("Task updated successfully");
       } else {
-        toast.error("Failed to update task");
+        // For non-recurring tasks, move between lists
+        const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${task._id}`, updatedTask);
+        
+        if (res.data.message === "Task updated successfully") {
+          if (updatedTask.completed) {
+            // Move to completed tasks
+            setTasks(tasks.filter(t => t._id !== task._id));
+            setCompletedTasks([...completedTasks, updatedTask]);
+          } else {
+            // Move to active tasks
+            setCompletedTasks(completedTasks.filter(t => t._id !== task._id));
+            setTasks([...tasks, updatedTask]);
+          }
+          toast.success("Task updated successfully");
+        } else {
+          toast.error("Failed to update task");
+        }
       }
     } catch (error) {
       toast.error("An error occurred while updating task");
@@ -177,8 +200,13 @@ const Profile = () => {
                   category={task.category}
                   dueDate={task.dueDate}
                   priority={task.priority}
+                  recurring={task.recurring}
+                  time={task.time}
+                  endTime={task.endTime}
+                  completed={task.completed}
                   onDelete={() => handleDelete(task._id)}
                   onEdit={() => handleUpdate(task)}
+                  onView={() => setViewingTask(task)}
                 />
               ))
             ) : (
@@ -199,8 +227,13 @@ const Profile = () => {
                     category={task.category}
                     dueDate={task.dueDate}
                     priority={task.priority}
+                    recurring={task.recurring}
+                    time={task.time}
+                    endTime={task.endTime}
+                    completed={task.completed}
                     onDelete={() => handleDelete(task._id)}
                     onEdit={() => handleUpdate(task)}
+                    onView={() => setViewingTask(task)}
                   />
                 </div>
               ))
