@@ -1,5 +1,5 @@
 // frontend/src/components/SignUp_In/SignUp.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './SignUp.css';
 import { toast } from 'react-toastify';
@@ -19,18 +19,47 @@ const SignUp = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswordMatchError, setShowPasswordMatchError] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    
+    // Reset the timeout whenever the user types
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+    
+    // Set a new timeout to check password match after 2 seconds of inactivity
+    if (e.target.name === 'confirmPassword' && e.target.value) {
+      const newTimeout = setTimeout(() => {
+        if (form.password !== e.target.value) {
+          setShowPasswordMatchError(true);
+        } else {
+          setShowPasswordMatchError(false);
+        }
+      }, 2000);
+      
+      setTypingTimeout(newTimeout);
+    } else if (e.target.name === 'confirmPassword') {
+      // Hide error immediately if confirm password is empty
+      setShowPasswordMatchError(false);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Clear any existing timeout
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
     if (form.password !== form.confirmPassword) {
+      setShowPasswordMatchError(true);
       toast.warning("Passwords do not match!");
       return;
     }
@@ -62,9 +91,14 @@ const SignUp = () => {
     }
   };
 
-  // Check if passwords match for dynamic validation
-  const passwordsMatch = form.password === form.confirmPassword;
-  const showPasswordMatchError = form.confirmPassword && !passwordsMatch;
+  // Clean up timeout on component unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+    };
+  }, [typingTimeout]);
 
   return (
     <div className="signup-container">

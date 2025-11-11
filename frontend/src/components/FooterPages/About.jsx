@@ -26,11 +26,8 @@ const About = () => {
           </p>
           <ul>
             <li>Intuitive task creation and organization</li>
-            <li>Real-time synchronization across all your devices</li>
             <li>Powerful search and filtering capabilities</li>
-            <li>Collaboration features for team projects</li>
-            <li>Secure cloud storage for your important notes and files</li>
-            <li>Cross-platform compatibility (Web, iOS, Android)</li>
+            <li>Cross-platform compatibility (Web)</li>
           </ul>
         </section>
 
