@@ -50,6 +50,46 @@
   border: 1px solid #555;
 }
 
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle-btn:hover {
+  color: #fff;
+}
+
+.password-error {
+  border: 1px solid #ff4d4d !important;
+  background-color: #332222 !important;
+}
+
+.password-match-error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+
 .submit-btn {
   padding: 12px;
   font-size: 16px;

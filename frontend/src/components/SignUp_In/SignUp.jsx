@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/userSlice';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:1000';
 
@@ -16,6 +17,8 @@ const SignUp = () => {
     password: '',
     confirmPassword: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -49,30 +52,90 @@ const SignUp = () => {
 
       dispatch(login(userData));
       localStorage.setItem("user", JSON.stringify(userData));
-
       navigate('/todo');
     } catch (err) {
-      // Don't log sensitive information like passwords
-      const msg = err.response?.data?.message || "Signup failed";
-      toast.error(msg);
-
-      if (msg.toLowerCase().includes("already exists")) {
-        setTimeout(() => navigate('/signin'), 1500);
+      if (err.response && err.response.data && err.response.data.message) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Registration failed. Please try again.");
       }
     }
   };
 
+  // Check if passwords match for dynamic validation
+  const passwordsMatch = form.password === form.confirmPassword;
+  const showPasswordMatchError = form.confirmPassword && !passwordsMatch;
+
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
-        <h2>Create Your Account</h2>
-        <p className="form-subtitle">Join TODO to manage tasks like a pro</p>
-
-        <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} required autoComplete="username" />
-        <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required autoComplete="email" />
-        <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} required autoComplete="new-password" />
-        <input type="password" name="confirmPassword" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange} required autoComplete="new-password" />
-
+        <h2>Sign Up</h2>
+        <p className="form-subtitle">Create your account</p>
+        
+        <input
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={form.username}
+          onChange={handleChange}
+          required
+        />
+        
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+          autoComplete="email"
+        />
+        
+        <div className="password-input-container">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            autoComplete="new-password"
+          />
+          <button
+            type="button"
+            className="password-toggle-btn"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
+        
+        <div className="password-input-container">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            required
+            autoComplete="new-password"
+            className={showPasswordMatchError ? "password-error" : ""}
+          />
+          <button
+            type="button"
+            className="password-toggle-btn"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
+        
+        {showPasswordMatchError && (
+          <div className="password-match-error">
+            Passwords do not match
+          </div>
+        )}
+        
         <button type="submit" className="submit-btn">Sign Up</button>
       </form>
     </div>

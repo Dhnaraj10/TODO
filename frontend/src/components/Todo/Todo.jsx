@@ -148,13 +148,12 @@ const Todo = () => {
 
   // Update Task (mark as complete/incomplete)
   const handleUpdate = async (task) => {
-    // If this is for editing, open the update modal
-    if (!task.completed) {
-      setEditingTask(task);
-      return;
-    }
-    
-    // Otherwise, this is for marking as complete
+    // This is for editing, open the update modal
+    setEditingTask(task);
+  };
+
+  // Mark task as complete
+  const handleComplete = async (task) => {
     try {
       const updatedTask = { ...task, completed: true };
       const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${task._id}`, updatedTask);
@@ -352,6 +351,7 @@ const Todo = () => {
                   completed={task.completed}
                   onDelete={() => handleDelete(task._id)}
                   onEdit={() => handleUpdate(task)}
+                  onComplete={() => handleComplete(task)}
                   onView={() => setViewingTask(task)}
                 />
               ))

@@ -6,11 +6,13 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/userSlice';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:1000';
 
 const SignIn = () => {
   const [form, setForm] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -49,11 +51,11 @@ const SignIn = () => {
       navigate('/todo');
     } catch (err) {
       // Don't log sensitive information like passwords
-      const msg = err.response?.data?.message || "Login failed";
-      toast.error(msg);
-
-      if (msg.toLowerCase().includes("sign up")) {
-        setTimeout(() => navigate('/signup'), 1500);
+      console.error("Login error:", err);
+      if (err.response?.data?.message) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Login failed. Please check your credentials and try again.");
       }
     }
   };
@@ -61,9 +63,9 @@ const SignIn = () => {
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
-        <h2>Welcome Back</h2>
-        <p className="form-subtitle">Login to access your TODO dashboard</p>
-
+        <h2>Sign In</h2>
+        <p className="form-subtitle">Access your account</p>
+        
         <input
           type="email"
           name="email"
@@ -73,16 +75,26 @@ const SignIn = () => {
           required
           autoComplete="email"
         />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-          autoComplete="current-password"
-        />
-
+        
+        <div className="password-input-container">
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            autoComplete="current-password"
+          />
+          <button
+            type="button"
+            className="password-toggle-btn"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+        </div>
+        
         <button type="submit" className="submit-btn">Sign In</button>
       </form>
     </div>

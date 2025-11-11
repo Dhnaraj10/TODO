@@ -533,21 +533,30 @@
 
 .search-result-item {
   background-color: #222;
-  padding: 15px;
+  border: 1px solid #333;
   border-radius: 8px;
   margin-bottom: 10px;
-  border: 1px solid #333;
+  padding: 15px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.search-result-item:hover {
+  background-color: #333;
+  border-color: #555;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
 }
 
 .search-result-item h4 {
-  margin: 0 0 10px 0;
   color: #fff;
+  margin: 0 0 10px 0;
 }
 
 .search-result-item p {
-  margin: 0;
   color: #ccc;
   font-size: 0.9rem;
+  margin: 0;
 }
 
 /* View Overlay */
