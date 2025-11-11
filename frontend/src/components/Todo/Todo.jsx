@@ -32,7 +32,8 @@ const Todo = () => {
           const activeTasks = (res.data.list || []).filter(task => !task.completed);
           setTasks(activeTasks);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Failed to load tasks:", error);
           toast.error("Failed to load tasks");
         });
     }
@@ -45,6 +46,11 @@ const Todo = () => {
         onClick: () => navigate('/signup'),
         style: { cursor: 'pointer' }
       });
+      return;
+    }
+
+    if (!userId) {
+      toast.error("User not properly authenticated. Please log in again.");
       return;
     }
 
@@ -63,10 +69,12 @@ const Todo = () => {
           setBody('');
           toast.success("Task added successfully");
         } else {
-          toast.error("Failed to add task");
+          toast.error(res.data.message || "Failed to add task");
         }
       } catch (error) {
-        toast.error("An error occurred while adding task");
+        console.error("Error adding task:", error);
+        const errorMsg = error.response?.data?.message || "An error occurred while adding task";
+        toast.error(errorMsg);
       }
     } else {
       toast.error("Title and body are required");
@@ -81,10 +89,12 @@ const Todo = () => {
         setTasks(tasks.filter(task => task._id !== taskId));
         toast.success("Task deleted successfully");
       } else {
-        toast.error("Failed to delete task");
+        toast.error(res.data.message || "Failed to delete task");
       }
     } catch (error) {
-      toast.error("An error occurred while deleting task");
+      console.error("Error deleting task:", error);
+      const errorMsg = error.response?.data?.message || "An error occurred while deleting task";
+      toast.error(errorMsg);
     }
   };
 
@@ -104,10 +114,12 @@ const Todo = () => {
         setTasks(tasks.filter(t => t._id !== task._id));
         toast.success("Task marked as complete");
       } else {
-        toast.error("Failed to update task");
+        toast.error(res.data.message || "Failed to update task");
       }
     } catch (error) {
-      toast.error("An error occurred while updating task");
+      console.error("Error updating task:", error);
+      const errorMsg = error.response?.data?.message || "An error occurred while updating task";
+      toast.error(errorMsg);
     }
   };
 
@@ -119,10 +131,12 @@ const Todo = () => {
         setEditingTask(null);
         toast.success("Task updated successfully");
       } else {
-        toast.error("Failed to update task");
+        toast.error(res.data.message || "Failed to update task");
       }
     } catch (error) {
-      toast.error("An error occurred while updating task");
+      console.error("Error saving task update:", error);
+      const errorMsg = error.response?.data?.message || "An error occurred while updating task";
+      toast.error(errorMsg);
     }
   };
 

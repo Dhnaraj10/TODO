@@ -4,6 +4,13 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 
+// Helper to format user response
+const formatUserResponse = (user) => ({
+  id: user._id,
+  email: user.email,
+  username: user.username
+});
+
 // Email validation regex
 const isValidEmail = (email) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -73,11 +80,7 @@ router.post("/register", async (req, res) => {
 
     res.status(201).json({ 
       message: "User registered successfully", 
-      user: { 
-        id: savedUser._id, 
-        email: savedUser.email, 
-        username: savedUser.username 
-      } 
+      user: formatUserResponse(savedUser)
     });
   } catch (error) {
     console.error("Registration error:", error); // Add error logging
@@ -135,11 +138,7 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username
-      }
+      user: formatUserResponse(user)
     });
   } catch (error) {
     console.error("Login error:", error); // Add error logging

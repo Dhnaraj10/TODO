@@ -21,11 +21,25 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${BASE_URL}/api/v1/signin`, form);
+      const res = await axios.post(
+        `${BASE_URL}/api/v1/login`,
+        form,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // 确保 res.data 和 res.data.user 存在
+      if (!res.data || !res.data.user) {
+        throw new Error('Invalid response structure');
+      }
 
       const userData = {
-        _id: res.data.user._id,
+        _id: res.data.user.id,
         email: res.data.user.email,
+        username: res.data.user.username
       };
 
       dispatch(login(userData));

@@ -42,8 +42,9 @@ const SignUp = () => {
       toast.success("Registration successful!");
 
       const userData = {
-        _id: res.data.user._id,
+        _id: res.data.user.id, // Use id instead of _id to match backend response
         email: res.data.user.email,
+        username: res.data.user.username
       };
 
       dispatch(login(userData));

@@ -11,7 +11,18 @@ router.get("/test", (req, res) => {
 router.post("/addTask", async (req, res) => {
   try {
     const { title, body, user: userId, completed } = req.body;
-    console.log("Add task request received:", { title, userId }); // Add logging
+    console.log("Add task request received:", { title, body, userId, completed }); // Add logging
+    
+    // Validate required fields
+    if (!title || !body) {
+      return res.status(400).json({ message: "Title and body are required" });
+    }
+    
+    // Validate user ID
+    if (!userId) {
+      console.log("Add task failed: User ID is missing");
+      return res.status(400).json({ message: "User ID is required" });
+    }
     
     const existingUser = await User.findById(userId);
     if (existingUser) {
@@ -26,6 +37,7 @@ router.post("/addTask", async (req, res) => {
       await existingUser.save();
       res.status(200).json({ message: "Task added successfully", task: list });
     } else {
+      console.log("Add task failed: User not found with ID", userId);
       res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
@@ -38,7 +50,7 @@ router.post("/addTask", async (req, res) => {
 router.put("/updateTask/:id", async (req, res) => {
   try {
     const { title, body, completed } = req.body;
-    console.log("Update task request received:", { id: req.params.id, title, completed }); // Add logging
+    console.log("Update task request received:", { id: req.params.id, title, body, completed }); // Add logging
     
     const updateData = { title, body };
     
