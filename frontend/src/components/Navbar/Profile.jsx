@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './Profile.css';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TodoCards from '../Todo/TodoCards';
+import { logout } from '../../redux/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:1000';
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -76,6 +81,30 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      const res = await axios.delete(`${BASE_URL}/api/v1/deleteAccount/${user._id}`);
+      if (res.data.message === "Account deleted successfully") {
+        dispatch(logout());
+        navigate('/');
+        toast.success("Account deleted successfully");
+      } else {
+        toast.error(res.data.message || "Failed to delete account");
+      }
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || "An error occurred while deleting account";
+      toast.error(errorMsg);
+    }
+  };
+
+  const confirmDeleteAccount = () => {
+    setShowDeleteConfirmation(true);
+  };
+
+  const cancelDeleteAccount = () => {
+    setShowDeleteConfirmation(false);
+  };
+
   if (!isLoggedIn) {
     return (
       <div className="profile-container">
@@ -98,12 +127,43 @@ const Profile = () => {
               alt="user"
             />
             <div className="user-details">
-              <h2>{user?.email}</h2>
+              <h2>{user?.username || 'User'}</h2>
+              {user?.username && <p>{user?.email}</p>}
+              {!user?.username && <p>{user?.email}</p>}
               <p>{tasks.length} active tasks</p>
               <p>{completedTasks.length} completed tasks</p>
             </div>
           </div>
+          
+          <div className="account-actions">
+            <button className="delete-account-btn" onClick={confirmDeleteAccount}>
+              Delete Account
+            </button>
+          </div>
         </div>
+
+        {showDeleteConfirmation && (
+          <div className="delete-confirmation-overlay">
+            <div className="delete-confirmation-modal">
+              <h2>Confirm Account Deletion</h2>
+              <p>Are you sure you want to delete your account? This action will permanently remove all your data including:</p>
+              <ul>
+                <li>Your profile information</li>
+                <li>All your tasks (active and completed)</li>
+                <li>All associated data</li>
+              </ul>
+              <p>This action cannot be undone.</p>
+              <div className="confirmation-buttons">
+                <button className="confirm-delete-btn" onClick={handleDeleteAccount}>
+                  Yes, Delete My Account
+                </button>
+                <button className="cancel-delete-btn" onClick={cancelDeleteAccount}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="tasks-section">
           <h2>Active Tasks</h2>

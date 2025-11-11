@@ -1,15 +1,9 @@
 //backend\routes/auth.js
 const router = require("express").Router(); 
 const User = require("../models/user");
+const List = require("../models/list");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
-
-// Helper to format user response
-const formatUserResponse = (user) => ({
-  id: user._id,
-  email: user.email,
-  username: user.username
-});
 
 // Email validation regex
 const isValidEmail = (email) =>
@@ -80,7 +74,11 @@ router.post("/register", async (req, res) => {
 
     res.status(201).json({ 
       message: "User registered successfully", 
-      user: formatUserResponse(savedUser)
+      user: { 
+        id: savedUser._id, 
+        email: savedUser.email, 
+        username: savedUser.username 
+      } 
     });
   } catch (error) {
     console.error("Registration error:", error); // Add error logging
@@ -138,7 +136,11 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({
       message: "Login successful",
-      user: formatUserResponse(user)
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username
+      }
     });
   } catch (error) {
     console.error("Login error:", error); // Add error logging
@@ -153,6 +155,62 @@ router.post("/login", async (req, res) => {
     }
     
     res.status(500).json({ message: "Login failed", error: error.message });
+  }
+});
+
+// Delete Account Route
+router.delete("/deleteAccount/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log("Delete account request received:", { userId }); // Add logging
+    
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.log("Database not connected, current state:", mongoose.connection.readyState);
+      return res.status(500).json({ 
+        message: "Database connection error. Please try again later.",
+        error: "Database not connected"
+      });
+    }
+
+    // Validate user ID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      console.log("Delete account failed: Invalid user ID");
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    // Find user
+    const user = await User.findById(userId);
+    if (!user) {
+      console.log("Delete account failed: User not found");
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Delete all tasks associated with the user
+    const deleteTasksResult = await List.deleteMany({ user: userId });
+    console.log(`Deleted ${deleteTasksResult.deletedCount} tasks for user ${userId}`);
+
+    // Delete the user
+    await User.findByIdAndDelete(userId);
+    console.log("User deleted successfully:", userId);
+
+    res.status(200).json({ 
+      message: "Account deleted successfully",
+      deletedTasks: deleteTasksResult.deletedCount
+    });
+  } catch (error) {
+    console.error("Delete account error:", error); // Add error logging
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    
+    if (error.name === 'MongoNetworkError' || error.name === 'MongooseServerSelectionError') {
+      return res.status(500).json({ 
+        message: "Database connection error. Please try again later.",
+        error: error.message 
+      });
+    }
+    
+    res.status(500).json({ message: "Failed to delete account", error: error.message });
   }
 });
 
