@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import TodoCards from '../Todo/TodoCards';
 import { logout } from '../../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { FaTimes } from 'react-icons/fa';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:1000';
 
@@ -18,6 +19,7 @@ const Profile = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [viewingTask, setViewingTask] = useState(null);
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -183,6 +185,64 @@ const Profile = () => {
                 <button className="cancel-delete-btn" onClick={cancelDeleteAccount}>
                   Cancel
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {viewingTask && (
+          <div className="view-overlay" onClick={() => setViewingTask(null)}>
+            <div className="view-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="view-header">
+                <h2>{viewingTask.title}</h2>
+                <button className="close-view-btn" onClick={() => setViewingTask(null)}>
+                  <FaTimes />
+                </button>
+              </div>
+              
+              <div className="view-content">
+                <div className="view-meta">
+                  {viewingTask.category && (
+                    <span className="task-category">{viewingTask.category}</span>
+                  )}
+                  {viewingTask.dueDate && !viewingTask.recurring?.type && (
+                    <span className="due-date">
+                      Due: {new Date(viewingTask.dueDate).toLocaleDateString()}
+                    </span>
+                  )}
+                  {viewingTask.time && !viewingTask.recurring?.type && (
+                    <span className="time-info">
+                      Time: {viewingTask.time}
+                      {viewingTask.endTime && ` - ${viewingTask.endTime}`}
+                    </span>
+                  )}
+                  {viewingTask.priority && (
+                    <span className={`priority-badge priority-${viewingTask.priority}`}>
+                      {viewingTask.priority.charAt(0).toUpperCase() + viewingTask.priority.slice(1)}
+                    </span>
+                  )}
+                  {viewingTask.recurring && viewingTask.recurring.type && (
+                    <span className="recurring-badge">
+                      Repeats {viewingTask.recurring.type}
+                    </span>
+                  )}
+                </div>
+                
+                <p className="view-body">{viewingTask.body}</p>
+                
+                {viewingTask.recurring && viewingTask.recurring.type && (
+                  <div className="recurring-details">
+                    <p>
+                      <strong>Recurring:</strong> {viewingTask.recurring.type.charAt(0).toUpperCase() + viewingTask.recurring.type.slice(1)}
+                    </p>
+                    {viewingTask.recurring.startTime && (
+                      <p>
+                        <strong>Time:</strong> {viewingTask.recurring.startTime}
+                        {viewingTask.recurring.endTime && ` - ${viewingTask.recurring.endTime}`}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
