@@ -7,8 +7,14 @@ const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, re
   // Format the due date for display
   const formattedDueDate = dueDate ? new Date(dueDate).toLocaleDateString() : null;
   
-  // Truncate body text to first 3 characters and add ellipsis
-  const truncatedBody = body ? (body.length > 3 ? body.substring(0, 3) + '...' : body) : '';
+  // Truncate body text to fit within the card, showing more text and only adding ellipsis when needed
+  const truncateBody = (text, maxLength = 50) => {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+  
+  const truncatedBody = truncateBody(body);
   
   // Get priority class for styling
   const getPriorityClass = (priority) => {

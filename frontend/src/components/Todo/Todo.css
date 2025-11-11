@@ -214,7 +214,7 @@
   display: flex;
   flex-direction: column;
   height: fit-content;
-  min-height: 350px; /* Set minimum height to ensure uniform size */
+  min-height: 320px; /* Adjusted min-height for better space utilization */
 }
 
 .todo-card:hover {
@@ -245,7 +245,7 @@
 
 .todo-card-title {
   margin: 0 0 10px;
-  font-size: 1.5rem; /* Make title bigger */
+  font-size: 1.4rem; /* Slightly reduced title size to balance with more body text */
   color: #fff;
   font-weight: bold;
   flex: 1;
@@ -257,8 +257,9 @@
   margin-bottom: 20px;
   flex-grow: 1;
   line-height: 1.6;
-  font-size: 0.9rem; /* Make body text smaller */
-  min-height: 20px; /* Ensure consistent spacing */
+  font-size: 1rem; /* Increased body text size for better readability */
+  min-height: 60px; /* Allow more space for body text */
+  word-break: break-word;
 }
 
 .task-category {
