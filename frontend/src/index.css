@@ -11,3 +11,80 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Logout Page Styles */
+.logout-container {
+  background-color: #000;
+  color: #fff;
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.logout-content {
+  background-color: #111;
+  padding: 50px 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid #333;
+}
+
+.logout-content h1 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.logout-content p {
+  font-size: 1.1rem;
+  color: #ccc;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.logout-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.logout-btn {
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: block;
+  text-align: center;
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.logout-btn.primary,
+.logout-btn {
+  background-color: #fff;
+  color: #000;
+}
+
+.logout-btn.secondary {
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #333;
+}
+
+.logout-btn.primary:hover {
+  background-color: #ddd;
+}
+
+.logout-btn.secondary:hover {
+  background-color: #333;
+}

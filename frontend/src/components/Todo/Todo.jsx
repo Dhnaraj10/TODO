@@ -214,7 +214,7 @@ const Todo = () => {
     <div className="todo-container">
       <div className="todo-content">
         <div className="todo-header">
-          <h2 className="todo-heading">Task Management</h2>
+          <h1 className="todo-heading">Task Management</h1>
           <button className="search-toggle-btn" onClick={() => setShowSearch(true)}>
             <FaSearch />
           </button>

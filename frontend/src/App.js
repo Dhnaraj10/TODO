@@ -27,7 +27,18 @@ const Logout = () => {
     dispatch(logout());
   }, [dispatch]);
 
-  return <h2 style={{ padding: '20px' }}>You have been logged out.</h2>;
+  return (
+    <div className="logout-container">
+      <div className="logout-content">
+        <h1>You have been logged out</h1>
+        <p>Thank you for using our task management application.</p>
+        <div className="logout-actions">
+          <a href="/signin" className="logout-btn">Sign In Again</a>
+          <a href="/" className="logout-btn secondary">Return to Home</a>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const App = () => {
@@ -50,13 +61,13 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/todo" element={<Todo />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
-      <ToastContainer position="top-center" autoClose={2000} />
+      <ToastContainer />
     </Router>
   );
 };
