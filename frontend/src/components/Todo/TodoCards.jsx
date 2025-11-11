@@ -54,9 +54,11 @@ const TodoCards = ({ title, body, category, dueDate, time, endTime, priority, re
         <button className="view-btn" onClick={onView}>
           <FaEye /> View
         </button>
-        <button className="update-btn" onClick={onEdit}>
-          <FaEdit /> Update
-        </button>
+        {onEdit && (
+          <button className="update-btn" onClick={onEdit}>
+            <FaEdit /> Update
+          </button>
+        )}
         <button className="complete-btn" onClick={onComplete}>
           {completed ? '✓ Active' : '✓ Complete'}
         </button>

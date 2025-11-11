@@ -87,14 +87,14 @@ const Profile = () => {
         const res = await axios.put(`${BASE_URL}/api/v2/updateTask/${task._id}`, updatedTask);
         
         if (res.data.message === "Task updated successfully") {
-          if (updatedTask.completed) {
-            // Move to completed tasks
-            setTasks(tasks.filter(t => t._id !== task._id));
-            setCompletedTasks([...completedTasks, updatedTask]);
-          } else {
-            // Move to active tasks
+          if (task.completed) {
+            // Was completed, now active
             setCompletedTasks(completedTasks.filter(t => t._id !== task._id));
             setTasks([...tasks, updatedTask]);
+          } else {
+            // Was active, now completed
+            setTasks(tasks.filter(t => t._id !== task._id));
+            setCompletedTasks([...completedTasks, updatedTask]);
           }
           toast.success("Task updated successfully");
         } else {
@@ -266,6 +266,7 @@ const Profile = () => {
                   completed={task.completed}
                   onDelete={() => handleDelete(task._id)}
                   onEdit={() => handleUpdate(task)}
+                  onComplete={() => handleUpdate(task)}
                   onView={() => setViewingTask(task)}
                 />
               ))
@@ -292,7 +293,8 @@ const Profile = () => {
                     endTime={task.endTime}
                     completed={task.completed}
                     onDelete={() => handleDelete(task._id)}
-                    onEdit={() => handleUpdate(task)}
+                    onEdit={null} // Hide update button for completed tasks
+                    onComplete={() => handleUpdate(task)}
                     onView={() => setViewingTask(task)}
                   />
                 </div>
