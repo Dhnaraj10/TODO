@@ -128,43 +128,45 @@ const Todo = () => {
 
   return (
     <div className="todo-container">
-      <div className="todo-input-section">
-        <h2 className="todo-heading">TODO</h2>
-        <input
-          type="text"
-          placeholder='Title'
-          className='todo-title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          placeholder='Body'
-          className='todo-body'
-          rows={3}
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-        />
-        <button className='add-btn' onClick={handleAdd}>Add Task</button>
-      </div>
-      
-      <div className="todo-list">
-        {isLoggedIn ? (
-          tasks.length > 0 ? (
-            tasks.map((task) => (
-              <TodoCards
-                key={task._id}
-                title={task.title}
-                body={task.body}
-                onDelete={() => handleDelete(task._id)}
-                onEdit={() => handleUpdate(task)}
-              />
-            ))
+      <div className="todo-content">
+        <div className="todo-input-section">
+          <h2 className="todo-heading">Task Management</h2>
+          <input
+            type="text"
+            placeholder='Task Title'
+            className='todo-title'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <textarea
+            placeholder='Task Description'
+            className='todo-body'
+            rows={3}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+          />
+          <button className='add-btn' onClick={handleAdd}>Add Task</button>
+        </div>
+        
+        <div className="todo-list">
+          {isLoggedIn ? (
+            tasks.length > 0 ? (
+              tasks.map((task) => (
+                <TodoCards
+                  key={task._id}
+                  title={task.title}
+                  body={task.body}
+                  onDelete={() => handleDelete(task._id)}
+                  onEdit={() => handleUpdate(task)}
+                />
+              ))
+            ) : (
+              <p className="no-tasks-message">No tasks found. Add your first task above!</p>
+            )
           ) : (
-            <p className="no-tasks-message">No tasks found. Add your first task above!</p>
-          )
-        ) : (
-          <p className="login-message">Please log in to see your tasks</p>
-        )}
+            <p className="login-message">Please log in to see your tasks</p>
+          )}
+        </div>
       </div>
       
       <ToastContainer />

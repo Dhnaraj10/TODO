@@ -10,4 +10,6 @@ services:
       - key: MONGO_URI
         sync: false
       - key: FRONTEND_URL
-        sync: false
+        value: https://todo.vercel.app
+      - key: PORT
+        value: 1000

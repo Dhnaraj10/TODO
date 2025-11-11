@@ -51,6 +51,15 @@ app.get('/manifest.json', (req, res) => {
   });
 });
 
+// Simple health check endpoint
+app.get('/healthz', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    service: 'todo-backend'
+  });
+});
+
 // Health check endpoint
 app.get('/health', async (req, res) => {
   const mongoStatus = mongoose.connection.readyState;
@@ -159,10 +168,3 @@ const PORT = process.env.PORT || 1000;
 
 // Export the app for use in startup.js
 module.exports = app;
-
-// Only start the server if this file is run directly (not imported)
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`✅ server started on port ${PORT}`);
-  });
-}

@@ -3,6 +3,7 @@
 
 const connectDB = require("./connection/connection");
 const mongoose = require("mongoose");
+const app = require('./app'); // Import the app
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
@@ -20,16 +21,22 @@ process.on('unhandledRejection', (err) => {
 connectDB().then(() => {
   console.log("Database connection established");
   
-  // Start the server after a brief delay to ensure connection is stable
-  setTimeout(() => {
-    try {
-      require('./app'); // This will start the Express server
-    } catch (error) {
-      console.error("Failed to start application:", error);
-      process.exit(1);
-    }
-  }, 1000);
+  // Get port from environment variable or default to 1000
+  const PORT = process.env.PORT || 1000;
+  
+  // Start the server
+  app.listen(PORT, () => {
+    console.log(`✅ Server started on port ${PORT}`);
+    console.log(`Health check endpoint: http://localhost:${PORT}/healthz`);
+  });
 }).catch((error) => {
   console.error("Failed to connect to database:", error);
-  process.exit(1);
+  console.error("Application will continue to start to allow for debugging");
+  
+  // Even if DB connection fails, start the server so we can debug via health endpoints
+  const PORT = process.env.PORT || 1000;
+  app.listen(PORT, () => {
+    console.log(`⚠️ Server started on port ${PORT} WITHOUT database connection`);
+    console.log(`Health check endpoint: http://localhost:${PORT}/healthz`);
+  });
 });

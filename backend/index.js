@@ -1,3 +1,3 @@
-// Simplified entry point
-// Just require the app to start it
-require('./app.js');
+// Proper entry point for Render deployment
+// Require the startup script to initialize the app and connect to database
+require('./startup.js');

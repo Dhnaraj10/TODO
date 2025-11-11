@@ -96,7 +96,9 @@ const connectDB = async (retries = 5) => {
       console.error("NODE_ENV:", process.env.NODE_ENV || "not set");
       console.error("Current working directory:", process.cwd());
       console.error("=== END DIAGNOSTICS ===");
-      process.exit(1);
+      
+      // Instead of exiting, reject the promise to allow caller to handle the error
+      throw err;
     }
   }
 };

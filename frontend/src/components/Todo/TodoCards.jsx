@@ -10,7 +10,7 @@ const TodoCards = ({ title, body, onDelete, onEdit }) => {
       <p>{body}</p>
       <div className="todo-card-actions">
         <button className="update-btn" onClick={onEdit}>
-          <FaEdit /> {title.completed ? 'Restore' : 'Update'}
+          <FaEdit /> Update
         </button>
         <button className="complete-btn" onClick={onEdit}>
           ✓ Complete
