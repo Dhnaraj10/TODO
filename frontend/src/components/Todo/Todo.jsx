@@ -253,25 +253,33 @@ const Todo = () => {
             
             {!recurring.type && (
               <>
-                <input
-                  type="date"
-                  className="task-date"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                />
-                <input
-                  type="time"
-                  className="task-time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-                <input
-                  type="time"
-                  className="task-time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  placeholder="End Time"
-                />
+                <div className="date-field-wrapper">
+                  <label className="field-label">Due Date</label>
+                  <input
+                    type="date"
+                    className="task-date"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                  />
+                </div>
+                <div className="time-field-wrapper">
+                  <label className="field-label">Start Time</label>
+                  <input
+                    type="time"
+                    className="task-time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  />
+                </div>
+                <div className="time-field-wrapper">
+                  <label className="field-label">End Time</label>
+                  <input
+                    type="time"
+                    className="task-time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                  />
+                </div>
               </>
             )}
             
@@ -311,20 +319,24 @@ const Todo = () => {
                 
                 {recurring.type && (
                   <>
-                    <input
-                      type="time"
-                      className="task-time"
-                      placeholder="Start Time"
-                      value={recurring.startTime}
-                      onChange={(e) => setRecurring({...recurring, startTime: e.target.value})}
-                    />
-                    <input
-                      type="time"
-                      className="task-time"
-                      placeholder="End Time (Optional)"
-                      value={recurring.endTime}
-                      onChange={(e) => setRecurring({...recurring, endTime: e.target.value})}
-                    />
+                    <div className="time-field-wrapper">
+                      <label className="field-label">Start Time</label>
+                      <input
+                        type="time"
+                        className="task-time"
+                        value={recurring.startTime}
+                        onChange={(e) => setRecurring({...recurring, startTime: e.target.value})}
+                      />
+                    </div>
+                    <div className="time-field-wrapper">
+                      <label className="field-label">End Time</label>
+                      <input
+                        type="time"
+                        className="task-time"
+                        value={recurring.endTime}
+                        onChange={(e) => setRecurring({...recurring, endTime: e.target.value})}
+                      />
+                    </div>
                   </>
                 )}
               </div>

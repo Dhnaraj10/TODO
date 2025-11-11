@@ -66,58 +66,196 @@
   box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
 }
 
-/* Task Options */
-.task-options {
-  display: flex;
-  gap: 10px;
-  margin: 15px 0;
-  flex-wrap: wrap;
-}
-
-.task-select, .task-date, .task-time {
-  flex: 1;
-  min-width: 120px;
-  padding: 10px;
-  font-size: 0.9rem;
-  border: none;
-  border-radius: 6px;
-  background-color: #222;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-.task-select:focus, .task-date:focus, .task-time:focus {
-  outline: none;
-  border: 1px solid #555;
-}
-
+/* Task Title and Description Inputs */
 .todo-title,
 .todo-body {
   width: 100%;
-  margin-bottom: 20px;
   padding: 12px;
   font-size: 1rem;
-  border: none;
+  border: 1px solid #333;
   border-radius: 6px;
-  font-family: 'Segoe UI', sans-serif;
-  box-sizing: border-box;
   background-color: #222;
   color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  margin-bottom: 20px;
   transition: 0.3s;
-  border: 1px solid #333;
 }
 
 .todo-title:focus,
 .todo-body:focus {
   outline: none;
-  background-color: #333;
   border: 1px solid #555;
+  background-color: #333;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
 .todo-body {
-  resize: vertical;
   min-height: 120px;
+  resize: vertical;
+}
+
+/* Task Options */
+.task-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.task-select, .task-date, .task-time {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #333;
+  min-height: 46px;
+  box-sizing: border-box;
+}
+
+.task-select:focus, .task-date:focus, .task-time:focus {
+  outline: none;
+  border: 1px solid #555;
+  background-color: #333;
+}
+
+/* Placeholder styling */
+.task-date::-webkit-input-placeholder,
+.task-time::-webkit-input-placeholder {
+  color: #aaa;
+}
+
+.task-date::-moz-placeholder,
+.task-time::-moz-placeholder {
+  color: #aaa;
+}
+
+.task-date:-ms-input-placeholder,
+.task-time:-ms-input-placeholder {
+  color: #aaa;
+}
+
+.task-date::-ms-input-placeholder,
+.task-time::-ms-input-placeholder {
+  color: #aaa;
+}
+
+.task-date::placeholder,
+.task-time::placeholder {
+  color: #aaa;
+}
+
+.field-label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.date-field-wrapper,
+.time-field-wrapper {
+  width: 100%;
+}
+
+/* Mobile responsiveness for task options */
+@media (max-width: 768px) {
+  .todo-container {
+    padding: 15px;
+    margin: 20px auto;
+  }
+  
+  .todo-input-section {
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .todo-heading {
+    font-size: 1.7rem;
+  }
+  
+  .task-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .task-select, 
+  .task-date, 
+  .task-time {
+    margin-bottom: 15px;
+  }
+  
+  .field-label {
+    margin-top: 10px;
+    display: block;
+  }
+  
+  .recurring-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .recurring-options .task-select,
+  .recurring-options .task-time {
+    margin-bottom: 15px;
+  }
+  
+  .todo-list {
+    gap: 20px;
+  }
+  
+  .todo-card {
+    width: 100%;
+    max-width: 350px;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+  
+  .modal-buttons {
+    flex-direction: column;
+  }
+  
+  .task-meta {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .view-meta {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .filter-controls {
+    flex-direction: column;
+  }
+  
+  .todo-card-actions {
+    flex-wrap: wrap;
+  }
+  
+  .view-btn,
+  .update-btn,
+  .delete-btn,
+  .complete-btn {
+    flex: 1 1 45%;
+  }
+}
+
+/* Mobile responsiveness for recurring options */
+@media (max-width: 768px) {
+  .recurring-options {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .recurring-options .task-select,
+  .recurring-options .task-time {
+    margin-bottom: 20px;
+  }
 }
 
 .add-btn {
@@ -131,6 +269,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 10px;
+  width: 100%;
 }
 
 .add-btn:hover {
@@ -145,7 +284,7 @@
 
 /* Recurring Section */
 .recurring-section {
-  margin: 15px 0;
+  margin: 20px 0;
 }
 
 .recurring-toggle {
@@ -153,21 +292,25 @@
   color: #fff;
   border: 1px solid #333;
   border-radius: 6px;
-  padding: 10px 15px;
+  padding: 12px 15px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   width: 100%;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 500;
 }
 
 .recurring-toggle:hover {
   background-color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(51, 51, 51, 0.3);
 }
 
 .recurring-options {
   margin-top: 15px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 10px;
 }
 
@@ -788,8 +931,36 @@
     flex-direction: column;
   }
   
+  .task-select, 
+  .task-date, 
+  .task-time {
+    min-width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .date-field-wrapper,
+  .time-field-wrapper {
+    min-width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .field-label {
+    margin-top: 10px;
+  }
+  
   .recurring-options {
     flex-direction: column;
+  }
+  
+  .recurring-options .task-select,
+  .recurring-options .task-time {
+    min-width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .recurring-options .time-field-wrapper {
+    min-width: 100%;
+    margin-bottom: 15px;
   }
   
   .todo-list {
@@ -836,5 +1007,12 @@
   
   .recurring-options {
     flex-direction: column;
+  }
+  
+  /* Mobile styles for title and description fields */
+  .todo-title,
+  .todo-body {
+    font-size: 1rem;
+    padding: 12px;
   }
 }
